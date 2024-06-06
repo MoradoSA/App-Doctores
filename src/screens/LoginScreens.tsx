@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Alert, Keyboard, useWindowDimensions } from "react-native"
+import { Alert, ToastAndroid, useWindowDimensions } from "react-native"
 import { Button, Input, Layout, Text } from '@ui-kitten/components'
 import { ScrollView } from 'react-native-gesture-handler'
 import { loginStyle } from '../themes/loginTheme'
@@ -8,6 +8,9 @@ import { StackScreenProps } from "@react-navigation/stack"
 import { RootStackParams } from "../routes/StackNavigation"
 import { MyIcon } from "../components/ui/MyIcon"
 import { useAuthStore } from '../store/auth/useAuthStore'
+import { NetworkCheckScreens } from '../components/NetworkCheckScreens'
+import Toast from 'react-native-toast-message'
+
 
 
 
@@ -23,21 +26,51 @@ export const LoginScreens = () => {
     cedula: '', password: ''
   })
 
+ 
+  const camposVacios = () => {
+    ToastAndroid.showWithGravityAndOffset(
+      'Debe llenar todos los campos',
+      ToastAndroid.LONG,
+      ToastAndroid.BOTTOM,
+      25,
+      50,
+    );
+  }
 
+  const datosIncorrectos = () => {
+    ToastAndroid.showWithGravityAndOffset(
+      'La cedula o contraseña son incorrectas',
+      ToastAndroid.LONG,
+      ToastAndroid.BOTTOM,
+      25,
+      50,
+    );
+  }
+
+  const ingresoCorrecto = () => {
+    ToastAndroid.showWithGravityAndOffset(
+      'Bienvenido Doctor',
+      ToastAndroid.LONG,
+      ToastAndroid.BOTTOM,
+      25,
+      50,
+    );
+  }
 
   const onLogin = async() => {
     if( form.cedula.length === 0 || form.password.length === 0){
-      Alert.alert('Error!', 'Todos los campos son obligatorios')
+      
+      camposVacios()
       
     }else{
      // setIsLoading(true)
       
       const wasSuccessfull = await login(form.cedula, form.password)
       if( wasSuccessfull ) {
-        Alert.alert('Bienvenido', 'Ingreso exitoso');
+       ingresoCorrecto()
         //setIsLoading(false)
       }else{
-        Alert.alert('Error', 'Usuario o contraseña incorrectos');
+        datosIncorrectos();
 
       }
 
@@ -46,15 +79,17 @@ export const LoginScreens = () => {
 }
 
   return (
-    <Layout style={ loginStyle.body }
-    
-    >
-        <ScrollView style={ loginStyle.contenido }>
+    <ScrollView style={ {
+      flex: 1,
+      backgroundColor: '#fff'
+    }}>
+    <Layout style={ loginStyle.contenido }>
           <Layout style={{
             paddingTop: height * 0.07,
             justifyContent: 'center',
             alignItems: 'center'
           }}>
+             <NetworkCheckScreens/>
             <WhiteLogo />
               <Text category="h1">Arco Doctores</Text>
             </Layout>
@@ -91,12 +126,12 @@ export const LoginScreens = () => {
            
             <Layout style={ loginStyle.campos }>
               <Button 
-              //disabled={isLoading}
+              disabled={isLoading}
               onPress={ onLogin }
               >Ingresar</Button>
             </Layout>
-        </ScrollView>
-    </Layout>
+        </Layout>
+    </ScrollView>
   )
 }
 

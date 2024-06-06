@@ -4,6 +4,7 @@ import { Layout, Text } from '@ui-kitten/components'
 import { loadingStyle } from '../themes/loadingTheme'
 
 
+
 export const LoadingSreens = () => {
   return (
     <Layout style={ loadingStyle.container}>

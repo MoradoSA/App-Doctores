@@ -12,7 +12,7 @@ import { AuthProvider } from './src/providers/auth/AuthProvider';
 
 export const App = () => {
   const colorScheme = useColorScheme();
-  const theme = colorScheme === 'dark' ? eva.dark : eva.light;
+  const theme = colorScheme === 'light' ? eva.dark : eva.light;
   const background = (colorScheme === 'dark') ?
   theme['color-basic-800'] : theme['color-basic-100'] 
 

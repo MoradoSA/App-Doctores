@@ -9,6 +9,7 @@ import {isEmpty} from 'lodash'
 import {useNavigation} from '@react-navigation/native'
 import { ListItem } from 'react-native-elements'
 import { MyIcon } from '../components/ui/MyIcon'
+import { NetworkCheckScreens } from '../components/NetworkCheckScreens'
 
 
 
@@ -28,12 +29,23 @@ export const HomeScreens = () => {
 
   const getAllOrdenesPacientes = async() =>{
     try {
+
      const resp = await doctoresApi.get('auth/doctores/pacientes/all?page=1')
      const ordenes =  resp.data.data
-     setOrdenesPaciente([...ordenesPaciente, ...ordenes])
-     setDataPaginador(resp.data.links)
-     console.log(ordenes)
-     setIsLoading(false)
+
+     if(isEmpty(ordenes)){
+      setOrdenesPaciente([])
+      setIsLoading(true)
+
+     }else{
+
+      setOrdenesPaciente([...ordenesPaciente, ...ordenes])
+      setDataPaginador(resp.data.links)
+      console.log(ordenes)
+      setIsLoading(false)
+
+     }
+
     
 
     } catch (error) {
@@ -49,12 +61,15 @@ export const HomeScreens = () => {
   }
 
   const refreshFooterList = ()=>{
+
     setIsLoading(true)
     setCurrentEndpoint(dataPaginador.next && dataPaginador.next)
+    
     if(currentEndpoint == dataPaginador.next){
         if(!isEmpty(dataPaginador.next)){
           getAllOrdenesPacientes()
         }else{
+        
             setIsLoading(false)
         }
     }else if(isEmpty(dataPaginador.next)){
@@ -71,6 +86,7 @@ export const HomeScreens = () => {
 },[searchCedula])
   return (
     <Layout style={homeStyle.Panel}>
+      <NetworkCheckScreens/>
       <ScrollView 
       refreshControl={
         <RefreshControl
@@ -91,7 +107,6 @@ export const HomeScreens = () => {
           </Layout>
         </Layout>
         {/*TODO: Fin de la estructura del header*/}
-
         {/*Inicio del panel contenedor del buscador y listado de Pacientes */}
         <Layout style={ homeStyle.containerListado }>
           <SearchBar
@@ -151,15 +166,14 @@ function ItemOrdenList(props:any){
   const {orden} = props
   return(
     <Layout>
-         <ListItem key={orden.id} onLongPress={()=> navigator.navigate('ver-orden',{ordenId:orden.id})} 
-      onPress={()=>navigator.navigate('orden-detalle-estudios',{ordenId:orden.id})} bottomDivider>
+         <ListItem key={orden.id} onPress={()=>navigator.navigate('DetalleEstudioScreens',{ordenId:orden.id})} bottomDivider>
           <ListItem.Content>
               <ListItem.Title>{orden.fecha}</ListItem.Title>
               <ListItem.Subtitle>{orden.sucursal}</ListItem.Subtitle>
               <ListItem.Subtitle>{orden.paciente}</ListItem.Subtitle>
               <ListItem.Subtitle>{orden.cedula}</ListItem.Subtitle>
           </ListItem.Content>
-          <MyIcon  name="arrow-ios-forward-outline"/>
+          <MyIcon  name="arrow-ios-forward-outline" />
       </ListItem>
     </Layout>
       

@@ -7,7 +7,7 @@ import {  StyleSheet } from "react-native";
 export const homeStyle = StyleSheet.create({
     Panel: {
         flex: 1,
-        backgroundColor:"#FFF"
+        backgroundColor:"#fff"
     },
 
     headerContainer: {
@@ -21,7 +21,7 @@ export const homeStyle = StyleSheet.create({
 
     headerTextContainer: {
         justifyContent: 'center',
-        marginHorizontal: 60,
+        marginHorizontal: 50,
        
     },
 
