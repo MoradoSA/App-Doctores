@@ -17,6 +17,7 @@ import Toast from 'react-native-toast-message'
 import { isString, find, isEmpty } from 'lodash'
 import Pdf from 'react-native-pdf';
 import Spinner from 'react-native-loading-spinner-overlay'
+import { CheckVersionAppScreens } from '../../components/CheckVersionAppScreens'
 
 
 export const VerEstudioScreens = () => {
@@ -160,6 +161,7 @@ export const VerEstudioScreens = () => {
             <ScrollView>
                 {/*Inicio del Panel de la lista de archivo de los estudios */}
                 <NetworkCheckScreens />
+                <CheckVersionAppScreens/>
                 <Layout style={homeStyle.headerContainer}>
                     <Layout style={{
                         margin: 10
@@ -179,7 +181,7 @@ export const VerEstudioScreens = () => {
                     flex: 1,
                     justifyContent: 'center',
                     alignContent: 'center',
-                    marginHorizontal: 60
+                    marginHorizontal: 20
 
 
                 }}>
@@ -187,17 +189,20 @@ export const VerEstudioScreens = () => {
                         archivosEstudio.map(({ url, extension }, item) => {
                             if(extension === "pdf"){
                                 return (
-                                    <Layout style={styles.container}>
-                                        <TouchableOpacity onPress={() => setPdfUrlSelected(url)}>
+                                    <Layout style={styles.containerPDF}>
+                                        <TouchableOpacity onPress={() => setPdfUrlSelected(url)} style={ styles.muestraPDF}>
                                            <Pdf source={{ uri: url}} style={styles.pdf}/> 
+                                           <Text style={ styles.textPDF }>Archivo PDF</Text>
                                         </TouchableOpacity>
-                                        <Button onPress={() => shareImageEstudio(url)} title="Compartir" icon={<MyIcon name='share-outline'/>} iconRight/>
+                                        <TouchableOpacity onPress={() => shareImageEstudio(url)} style={ styles.pdfButtonShare }>
+                                            <Text style={ styles.pdfButtonShareText }>Compartir</Text>
+                                        </TouchableOpacity>
                                     </Layout>
     
                                 )
                             }else{
                                 return(
-                                    <TouchableOpacity onPress={() => { showModalEstudioPreview(item) }} key={item} style={ styles.imageContainer}>
+                                    <TouchableOpacity onPress={() => { showModalEstudioPreview(item) }} key={item} style={ styles.imageContainer} >
                                         <Image source={{ uri: url }} style={styles.imagen} />
                                     </TouchableOpacity>
                                 )
@@ -232,26 +237,26 @@ export const VerEstudioScreens = () => {
 const styles = StyleSheet.create({
     imageContainer: {
         flex: 1,
+        width: 360,
+        height: 300,
         justifyContent: 'center',
-        borderColor: '#f23',
-        borderWidth: 2,
-        margin: 5,
+        borderColor: '#fff',
+        borderWidth: 5,
         shadowOffset: {
             width: 0,
             height: 9,
           },
-          shadowOpacity: 0.50,
-          shadowRadius: 12.35,
+          shadowOpacity: 0.90,
+          shadowRadius: 13,
       
           elevation: 10,
+          marginTop: 10,
+          marginBottom: 10
     },
 
     imagen: {
-        flex: 1,
-        width: 250,
-        height: 300,
-        resizeMode: 'stretch',
-        marginTop: 20
+       width: 350,
+       height: 290,
     },
 
     bottomContainer: {
@@ -265,23 +270,64 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         justifyContent: 'space-between',
     },
-    container: {
+    containerPDF: {
         width:'100%',
-        height:'100%'
+        height:'100%',
       },
 
+    muestraPDF: {
+        width: 350,
+        height: 450,
+        backgroundColor: '#fff',
+        borderWidth: 2,
+        borderColor: '#33FFF9',
+        shadowOffset: {
+            width: 0,
+            height: 9,
+          },
+          shadowOpacity: 0.90,
+          shadowRadius: 13,
+      
+        elevation: 10,
+        marginBottom: 10
+
+    },
+
+    textPDF:{
+        fontSize: 25,
+        fontWeight: 600,
+        right: '-30%',
+        top: '-35%'
+    },
+
     pdf:{
-        width:null,
-        height: 400,
+        width:300,
+        height: 300,
     },
     pdfViewComplete:{
         width:'100%',
         height:'100%'
     },
 
+    pdfButtonShare: {
+        width: '100%',
+        height: 50,
+        backgroundColor: '#33FFF9',
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderRadius: 10
+    },
+
+    pdfButtonShareText: {
+        fontSize: 20,
+        fontWeight: 500,
+        color: '#fff'
+    },
+
     spinnerTextStyle: {
-        color: 'black',
-        fontSize: 20
+        color: 'white',
+        fontSize: 25,
+        fontWeight: 900
 
     },
 

@@ -22,6 +22,7 @@ export const homeStyle = StyleSheet.create({
     headerTextContainer: {
         justifyContent: 'center',
         marginHorizontal: 50,
+        
        
     },
 

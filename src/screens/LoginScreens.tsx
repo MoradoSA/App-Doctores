@@ -10,6 +10,7 @@ import { MyIcon } from "../components/ui/MyIcon"
 import { useAuthStore } from '../store/auth/useAuthStore'
 import { NetworkCheckScreens } from '../components/NetworkCheckScreens'
 import Toast from 'react-native-toast-message'
+import { CheckVersionAppScreens } from '../components/CheckVersionAppScreens'
 
 
 
@@ -19,14 +20,14 @@ interface Props extends StackScreenProps<RootStackParams, 'LoginScreens'>{}
 
 export const LoginScreens = () => {
   
-  const {login } = useAuthStore()
+  const { login, userData } = useAuthStore()
   const [isLoading, setIsLoading] = useState(false)
   const { height } = useWindowDimensions();
   const [form, setForm] = useState({
     cedula: '', password: ''
   })
 
- 
+ /*TODO:Mensajes de las acciones de la aplicacion */
   const camposVacios = () => {
     ToastAndroid.showWithGravityAndOffset(
       'Debe llenar todos los campos',
@@ -56,7 +57,7 @@ export const LoginScreens = () => {
       50,
     );
   }
-
+/*----------------------------------------------- */
   const onLogin = async() => {
     if( form.cedula.length === 0 || form.password.length === 0){
       
@@ -89,6 +90,7 @@ export const LoginScreens = () => {
             justifyContent: 'center',
             alignItems: 'center'
           }}>
+            <CheckVersionAppScreens/>
              <NetworkCheckScreens/>
             <WhiteLogo />
               <Text category="h1">Arco Doctores</Text>

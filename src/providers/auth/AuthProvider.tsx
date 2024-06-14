@@ -22,7 +22,7 @@ export const AuthProvider = ({ children }: PropsWithChildren) =>{
         if( status === "authenticated" ){
           navigation.reset({
             index: 0,
-            routes: [{ name: 'HomeScreens' }],
+            routes: [{ name: 'BottonTabsNavigation' }],
           })
         }else{
           navigation.reset({

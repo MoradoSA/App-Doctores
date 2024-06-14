@@ -33,7 +33,7 @@ export const useAuthStore = create<AuthState>()( (set, get) =>({
         //TODO: Almacenar el token en el storage
         await StorageAdapter.setItem('token', resp)
         const usuario = await doctoresApi.get('/auth/doctores/')
- 
+        console.log(usuario.data)
         
         set({ status:'authenticated', token: resp, usuario: usuario.data });
         
@@ -49,8 +49,9 @@ export const useAuthStore = create<AuthState>()( (set, get) =>({
                 return ;
             }
 
-            const usuario = await doctoresApi.get<LoginResponse>('/auth/doctores/')
-            console.log(usuario) 
+          return resp;
+
+            
 
         } catch (error) {
             console.log(error)
@@ -67,7 +68,9 @@ export const useAuthStore = create<AuthState>()( (set, get) =>({
         }
 
         await StorageAdapter.setItem('token', resp)
-        set({ status:'authenticated', token: resp});
+       
+
+        set({ status:'authenticated', token: resp,});
 
        
     },

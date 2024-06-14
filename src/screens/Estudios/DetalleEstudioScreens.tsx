@@ -8,6 +8,7 @@ import { homeStyle } from '../../themes/homeTheme'
 import { MyIcon } from '../../components/ui/MyIcon'
 import { doctoresApi } from '../../api/doctoresApi'
 import { Badge, ListItem } from 'react-native-elements'
+import { CheckVersionAppScreens } from '../../components/CheckVersionAppScreens'
 
 export const DetalleEstudioScreens = () => {
   const navigator = useNavigation()
@@ -48,6 +49,7 @@ export const DetalleEstudioScreens = () => {
     }}>
        <ScrollView>
           <NetworkCheckScreens/>
+          <CheckVersionAppScreens/>
           <Layout style={homeStyle.headerContainer}>
             <Layout style={{
               margin: 10
