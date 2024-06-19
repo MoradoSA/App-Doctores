@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { BackHandler, Keyboard, PermissionsAndroid, Platform, StyleSheet, ToastAndroid, TouchableOpacity } from 'react-native'
+import { BackHandler, Keyboard, PermissionsAndroid, Platform, StyleSheet, ToastAndroid, TouchableOpacity, ScrollView } from 'react-native'
 import { Button, Input, Layout, Text } from '@ui-kitten/components'
 import { Avatar, Header } from 'react-native-elements'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
@@ -13,8 +13,11 @@ import { NetworkCheckScreens } from '../../components/NetworkCheckScreens'
 import { CheckVersionAppScreens } from '../../components/CheckVersionAppScreens'
 import { MyIcon } from '../../components/ui/MyIcon'
 import Loader from 'react-native-modal-loader'
+import { Popup, Root } from 'popup-ui'
 import { Icon } from '@ui-kitten/components';
 import { loginStyle } from '../../themes/loginTheme'
+import LinearGradient from 'react-native-linear-gradient'
+
 
 
 
@@ -31,315 +34,318 @@ const hasAndroidPermission = async () => {
     return status === 'granted'
 }
 
-{/*Forma de boton de acorde a la accio requerida*/ }
 
-const EditButton = (props: any) => {
-    const { isEdit, icon, onPress } = props
-    return isEdit && (
-        <>
-            <Icon onPress={onPress} name={icon} type="ionicon" size={25} color="white" />
-        </>
-    )
-}
 
 
 export const DatosOrdenDoctorScreens = () => {
     const linkTo = useLinkTo()
-    const navigation = useNavigation();
+    const navigation = useNavigation()
     const [isEdit, setIsEdit] = useState(false)
-    const [logoClinica, setLogoClinica] = useState({})
-    const [dataClinica,setDataClinica] = useState({})
-    const [isLoandingData, setIsLoandingData] = useState(false)
-    const [dataClinicaSingle, setDataClinicaSingle] = useState({
-          nombre: '', direccion: '', telefono: '', logo: ''
-    })
-
-
-    {/*TODO: Funcion para obtener archivo del dispositivo */ }
+    const [logoClinica, setLogoClinica] = useState("")
+    const [dataClinica, setDataClinica] = useState({})
+    const [isLoadingData, setIsLoadingData] = useState(true)
+    const [dataClinicaSingle, setDataClinicaSingle] = useState({})
 
     const handleReadDataOrdenFromAsyncStorage = () => {
-        AsyncStorage.getItem("@ordenData").then((value: any) => {
+        AsyncStorage.getItem("@ordenData").then((value) => {
             return JSON.parse(value)
-        }).then((data: any) => {
+        }).then((data) => {
             if (!isEmpty(data)) {
                 if (has(data, "logo")) {
-                    handleLoadLogoDoctor(data)
+                    handleLoadLogoClinica(data)
                 } else {
                     setDataClinica(data)
                     setDataClinicaSingle(data)
                 }
-                setIsLoandingData(!isLoandingData)
             }
-        }).catch((error) => {
-            setIsLoandingData(!isLoandingData)
+            setIsLoadingData(!isLoadingData)
+        }).catch((e) => {
+            setIsLoadingData(!isLoadingData)
         })
     }
 
-    const handleLoadLogoDoctor = (data: any) => {
+    const handleLoadLogoClinica = (data: any) => {
         RNFS.readFile(data.logo, 'base64').then((content) => {
             setLogoClinica(`data:image/jpeg;base64,${content}`)
             setDataClinica(data)
             setDataClinicaSingle(data)
-        }).catch((error) => {
-            console.log('ERROR: image file write failed!!!');
-            console.log(error.message, error.code);
+        }).catch(err => {
+            console.log('ERROR: nos e encuentra la imagen');
+            console.log(err.message, err.code);
         })
     }
 
     const handleSaveDataOrden = () => {
         AsyncStorage.setItem("@ordenData", JSON.stringify(dataClinicaSingle)).then(() => {
             setDataClinica(dataClinicaSingle)
-            console.log(JSON.stringify(dataClinica))
         }).catch(() => {
-            errorGuardado()
+            Popup.show({
+                type: 'Danger',
+                title: 'Error!',
+                textBody: 'No se ha podido guardar los datos',
+                //buttonText:'Completar Ahora!',
+                callback: () => {
+                    Popup.hide()
+                    //navigation.navigate('DatosOrdenDoctorScreens' as never)
+                }
+            })
         })
     }
 
-    
-
-
     useEffect(() => {
-        const backActions = () => {
-            linkTo('/cuenta/panel')
-            return true
-        }
+        const backAction = () => {
+            linkTo('/CuentaScreens')
+            return true;
+        };
 
         const backHandler = BackHandler.addEventListener(
-            'hardwareBackPress',
-            backActions
-        )
+            "hardwareBackPress",
+            backAction
+        );
 
         return () => backHandler.remove();
     }, [])
 
+
     useEffect(() => {
-        if (isLoandingData && isEmpty(dataClinica)) {
+        if (isLoadingData && isEmpty(dataClinica)) {
             handleReadDataOrdenFromAsyncStorage()
         } else {
             handleSaveDataOrden()
         }
     }, [dataClinicaSingle])
 
+
     const handlePickerImageLogo = async () => {
         if (Platform.Version === 'android' && !(await hasAndroidPermission())) {
-            return console.log('No se puede obtener el permiso')
-        }
-        ImagePicker.openPicker({
-            width: 300,
-            height: 300,
-            cropping: true,
-            cropperCircleOverlay: true,
-            mediaType: 'photo',
-            compressImageQuality: 0.8,
-            includeBase64: true,
-            writeTempFile: false
-        }).then(image => {
-            setLogoClinica(`data:${image.mime};base64,${image.data}`)
-            let imagePath = `${RNFS.DocumentDirectoryPath}/logo.${mime.getExtension(image.mime)}`
-            RNFS.writeFile(imagePath, image.data, 'base64').then((response) => {
-                setDataClinicaSingle({...dataClinica,logo: imagePath})
-                
-            }).catch((err) => {
-                errorGuardado()
+            return;
+        } else {
+            ImagePicker.openPicker({
+                width: 300,
+                height: 300,
+                cropping: true,
+                cropperCircleOverlay: true,
+                mediaType: 'photo',
+                compressImageQuality: 0.8,
+                includeBase64: true,
+                writeTempFile: false
+            }).then((image) => {
+                setLogoClinica(`data:${image.mime};base64,${image.data}`)
+                let imagePath = `${RNFS.DocumentDirectoryPath}/logo.${mime.getExtension(image.mime)}`
+                RNFS.writeFile(imagePath, image.data ? image.data : '', 'base64').then((response) => {
+                    //console.log('Imagen guardada en la ruta:', imagePath)
+                    setDataClinicaSingle({ ...dataClinica, logo: imagePath })
+                })
+
+            }).catch((error) => {
+                Popup.show({
+                    type: 'Danger',
+                    title: 'Error!',
+                    textBody: 'No se pudo cargar la imagen',
+                    //buttonText:'Completar Ahora!',
+                    callback: () => {
+                        Popup.hide()
+                        //navigation.navigate('DatosOrdenDoctorScreens' as never)
+                    }
+                })
             })
-        });
+        }
     }
 
-   
 
-    const handleCancelOption = (e: any) => {
-        cancelUpdate()
+
+    const handleCancelOption = () => {
+        Popup.show({
+            type: 'Danger',
+            title: 'Error!',
+            textBody: 'No se ha realizado ningun cambio',
+            //buttonText:'Completar Ahora!',
+            callback: () => {
+                Popup.hide()
+                //navigation.navigate('DatosOrdenDoctorScreens' as never)
+            }
+        })
         setDataClinicaSingle(dataClinica)
         Keyboard.dismiss()
         setIsEdit(!isEdit)
     }
 
+
     const handleSuccessOption = () => {
+
         if (has(dataClinicaSingle, "logo") || has(dataClinica, "logo")) {
             Keyboard.dismiss()
             setIsEdit(!isEdit)
             handleSaveDataOrden()
-            successGuardado()
         } else {
-            errorGuardadoLogo()
+            Popup.show({
+                type: 'Danger',
+                title: 'Error!',
+                textBody: 'La orden no tiene logo',
+                //buttonText:'Completar Ahora!',
+                callback: () => {
+                    Popup.hide()
+                    //navigation.navigate('DatosOrdenDoctorScreens' as never)
+                }
+            })
         }
     }
 
 
-
-{/*TODO: Mensajes de las acciones en la aplicacion */}
-    const errorGuardadoLogo = () => {
-        ToastAndroid.showWithGravityAndOffset(
-            'Error, No tiene logo para la orden',
-            ToastAndroid.LONG,
-            ToastAndroid.BOTTOM,
-            25,
-            50,
-        );
-    }
-
-    const successGuardado = () => {
-        ToastAndroid.showWithGravityAndOffset(
-            'Guardado correctamente',
-            ToastAndroid.LONG,
-            ToastAndroid.BOTTOM,
-            25,
-            50,
-        );
-    }
-
-    const cancelUpdate = () => {
-        ToastAndroid.showWithGravityAndOffset(
-            'No se ha realizado cambios',
-            ToastAndroid.LONG,
-            ToastAndroid.BOTTOM,
-            25,
-            50,
-        );
-    }
-
-    const errorGuardado = () => {
-        ToastAndroid.showWithGravityAndOffset(
-            'Error al guardar los cambios',
-            ToastAndroid.LONG,
-            ToastAndroid.BOTTOM,
-            25,
-            50,
-        );
-    }
-
-{/*----------------------------------------------- */}
-
     return (
-        <Layout style={style.container}>
-            <KeyboardAwareScrollView>
-                <NetworkCheckScreens />
-                <CheckVersionAppScreens />
-                <Layout style={style.headerContainer}>
-                    <Layout style={style.headerIcon}>
-                        {
-                            isEdit ? (
-                                <>
-                                    <TouchableOpacity onPress={handleCancelOption}>
-                                        <MyIcon name='close-outline' />
-                                    </TouchableOpacity>
-                                </>
-                            ) : (
-                                <>
-                                    <TouchableOpacity onPress={() => navigation.navigate("CuentaScreens" as never)}>
-                                        <MyIcon name='arrow-back-outline' />
-                                    </TouchableOpacity>
-                                </>
-                            )
-                        }
+        <Root>
+            <LinearGradient
+                style={{ flex: 1 }}
+                colors={['#7FDFF0', '#fff', '#fff', '#91E4F2']}
+                start={{ x: 0, y: 1 }}
+                end={{ x: 1, y: 0 }}
+            >
+                <ScrollView>
+                    <Layout style={style.container}>
+                        <KeyboardAwareScrollView>
+                            {/* <NetworkCheckScreens />
+                        <CheckVersionAppScreens /> */}
+                            <Layout style={style.headerContainer}>
+                                <Layout style={style.headerIcon}>
+                                    {
+                                        isEdit ? (
+                                            <>
+                                                <TouchableOpacity onPress={handleCancelOption}>
+                                                    <MyIcon name='close-outline' />
+                                                </TouchableOpacity>
+                                            </>
+                                        ) : (
+                                            <>
+                                                <TouchableOpacity onPress={() => navigation.navigate("CuentaScreens" as never)}>
+                                                    <MyIcon name='arrow-back-outline' />
+                                                </TouchableOpacity>
+                                            </>
+                                        )
+                                    }
 
+                                </Layout>
+                                <Layout style={{ ...style.headerTextContainer, margin: 15 }}>
+                                    <Text style={style.headerText}>Datos para la orden</Text>
+                                </Layout>
+                                <Layout style={style.headerIcon}>
+                                    {
+                                        isEdit ? (
+                                            <>
+                                                <TouchableOpacity onPress={handleSuccessOption}>
+                                                    <MyIcon name='edit-outline' />
+                                                </TouchableOpacity>
+                                            </>
+                                        ) : (
+                                            <>
+
+                                            </>
+                                        )
+                                    }
+                                </Layout>
+                                <Loader loading={isLoadingData} size="large" title="Cargando..." color="#ff66be" />
+                            </Layout>
+                            <Layout style={{ flex: 1, height: 220 }}>
+                                {
+                                    isEmpty(logoClinica) ?
+                                        <Avatar onPress={handlePickerImageLogo}
+                                            source={require('../../assets/images/clinica.png')}
+                                            containerStyle={{
+                                                width: 200,
+                                                height: 200,
+                                                borderRadius: 100,
+                                                justifyContent: 'center',
+                                                marginTop: 15,
+                                                alignSelf: 'center',
+                                                backgroundColor: '#fff',
+                                                borderColor: 'white',
+                                                shadowOffset: {
+                                                    width: 0,
+                                                    height: 9,
+                                                },
+                                                shadowOpacity: 0.50,
+                                                shadowRadius: 12.35,
+                                                elevation: 10,
+
+
+                                            }} rounded size="xlarge">
+                                        </Avatar> :
+                                        <Avatar source={{ uri: logoClinica }} onPress={handlePickerImageLogo} overlayContainerStyle={{ backgroundColor: 'gray' }}
+                                            titleStyle={{ color: 'white', fontSize: 26 }}
+                                            containerStyle={{
+                                                width: 150,
+                                                height: 150,
+                                                borderRadius: 100,
+                                                justifyContent: 'center',
+                                                marginTop: 15,
+                                                alignSelf: 'center',
+                                                backgroundColor: '#fff',
+                                                borderColor: 'white',
+                                                shadowOffset: {
+                                                    width: 0,
+                                                    height: 9,
+                                                },
+                                                shadowOpacity: 0.50,
+                                                shadowRadius: 12.35,
+
+                                                elevation: 10,
+                                            }}
+                                            rounded size="xlarge" title="TU LOGO">
+                                        </Avatar>
+                                }
+
+                            </Layout>
+                            <Layout style={{ flex: 1, marginTop: 10 }}>
+                                <Layout>
+                                    <Input style={{ ...loginStyle.campos }}
+                                        onFocus={() => !isEdit && setIsEdit(true)}
+                                        keyboardType="default"
+                                        autoCapitalize="none"
+                                        selectionColor='white'
+                                        onChangeText={(text) => setDataClinicaSingle({ ...dataClinicaSingle, nombre: text })}
+                                        value={dataClinicaSingle.nombre}
+                                        placeholder="Ingrese el nombre de la Clinica"
+                                        underlineColorAndroid='white'
+                                        autoCorrect={false}
+                                        accessoryLeft={<MyIcon name="home-outline" />}
+                                    //onSubmitEditing={onLogin}
+                                    />
+                                </Layout>
+
+                                <Layout>
+                                    <Input style={loginStyle.campos}
+                                        onFocus={() => !isEdit && setIsEdit(true)}
+                                        keyboardType="default"
+                                        autoCapitalize="none"
+                                        selectionColor='white'
+                                        onChangeText={(text) => setDataClinicaSingle({ ...dataClinicaSingle, direccion: text })}
+                                        value={dataClinicaSingle.direccion}
+                                        placeholder="Ingrese la direccion de la clinica"
+                                        accessoryLeft={<MyIcon name="navigation-2-outline" />}
+                                    //onSubmitEditing={onLogin}
+                                    />
+                                </Layout>
+
+                                <Layout>
+                                    <Input style={loginStyle.campos}
+                                        onFocus={() => !isEdit && setIsEdit(true)}
+                                        keyboardType="default"
+                                        autoCapitalize="none"
+                                        selectionColor='white'
+                                        onChangeText={(text) => setDataClinicaSingle({ ...dataClinicaSingle, telefono: text })}
+                                        value={dataClinicaSingle.telefono}
+                                        placeholder="Ingrese el numero de telefono"
+                                        accessoryLeft={<MyIcon name="phone-call-outline" />}
+
+                                    />
+                                </Layout>
+                            </Layout>
+                        </KeyboardAwareScrollView>
                     </Layout>
-                    <Layout style={{ ...style.headerTextContainer, margin: 15 }}>
-                        <Text style={style.headerText}>Datos para la orden</Text>
-                    </Layout>
-                    <Layout style={style.headerIcon}>
-                        {
-                            isEdit ? (
-                                <>
-                                    <TouchableOpacity onPress={ handleSuccessOption }>
-                                        <MyIcon name='edit-outline' />
-                                    </TouchableOpacity>
-                                </>
-                            ) : (
-                                <>
 
-                                </>
-                            )
-                        }
-                    </Layout>
-                    <Loader loading={isLoandingData} size="large" title="Cargando..." color="#ff66be" />
-                </Layout>
-                <Layout style={{ flex: 1, height: 180 }}>
-                    {
-                        isEmpty(logoClinica) ?
-                            <Avatar onPress={handlePickerImageLogo}
-                                source={require('../../assets/images/question.png')}
-                                containerStyle={{
-                                    justifyContent: 'center', marginTop: 15, alignSelf: 'center',
-                                    backgroundColor: '#fff',
-                                    borderColor: 'white',
-                                    shadowOffset: {
-                                        width: 0,
-                                        height: 9,
-                                    },
-                                    shadowOpacity: 0.50,
-                                    shadowRadius: 12.35,
+                </ScrollView>
+                </LinearGradient>
+        </Root>
 
-                                    elevation: 10,
-
-                                }} rounded size="xlarge">
-                            </Avatar> :
-                            <Avatar source={{ uri: logoClinica }} onPress={handlePickerImageLogo} overlayContainerStyle={{ backgroundColor: 'gray' }}
-                                titleStyle={{ color: 'white', fontSize: 26 }}
-                                containerStyle={{
-                                    justifyContent: 'center', marginTop: 15, alignSelf: 'center',
-                                    backgroundColor: '#fff',
-                                    borderColor: 'white',
-                                    shadowOffset: {
-                                        width: 0,
-                                        height: 9,
-                                    },
-                                    shadowOpacity: 0.50,
-                                    shadowRadius: 12.35,
-
-                                    elevation: 10,
-                                }} rounded size="xlarge" title="TU LOGO">
-                            </Avatar>
-                    }
-
-                </Layout>
-                <Layout style={{ flex: 1, marginTop: 10 }}>
-                    <Layout>
-                        <Input style={{...loginStyle.campos}}
-                            onFocus={()=>!isEdit && setIsEdit(true)}
-                            keyboardType="default"
-                            autoCapitalize="none"
-                            selectionColor='white'
-                            onChangeText={(text) => setDataClinicaSingle({...dataClinicaSingle,nombre:text})}
-                            value={dataClinicaSingle.nombre}
-                            placeholder="Ingrese el nombre de la Clinica"
-                            underlineColorAndroid='white'
-                            autoCorrect={false}
-                            accessoryLeft={<MyIcon name="home-outline" />}
-                            //onSubmitEditing={onLogin}
-                        />
-                    </Layout>
-
-                    <Layout>
-                        <Input style={loginStyle.campos}
-                            onFocus={()=>!isEdit && setIsEdit(true)}
-                            keyboardType="default"
-                            autoCapitalize="none"
-                            selectionColor='white'
-                            onChangeText={(text) => setDataClinicaSingle({...dataClinicaSingle,direccion:text})}
-                            value={dataClinicaSingle.direccion}
-                            placeholder="Ingrese la direccion de la clinica"
-                            accessoryLeft={<MyIcon name="navigation-2-outline" />}
-                            //onSubmitEditing={onLogin}
-                        />
-                    </Layout>
-
-                    <Layout>
-                        <Input style={loginStyle.campos}
-                            onFocus={()=>!isEdit && setIsEdit(true)}
-                            keyboardType="default"
-                            autoCapitalize="none"
-                            selectionColor='white'
-                            onChangeText={(text) => setDataClinicaSingle({...dataClinicaSingle,telefono:text})}
-                            value={dataClinicaSingle.telefono}
-                            placeholder="Ingrese el numero de telefono"
-                            accessoryLeft={<MyIcon name="phone-call-outline" />}
-                            
-                        />
-                    </Layout>
-                </Layout>
-            </KeyboardAwareScrollView>
-        </Layout>
     )
 }
 

@@ -11,8 +11,8 @@ import { ListItem } from 'react-native-elements'
 import { MyIcon } from '../components/ui/MyIcon'
 import { NetworkCheckScreens } from '../components/NetworkCheckScreens'
 import { CheckVersionAppScreens } from '../components/CheckVersionAppScreens'
-import { useAuthStore } from '../store/auth/useAuthStore'
-
+import LinearGradient from 'react-native-linear-gradient'
+import { Popup, Root } from 'popup-ui'
 
 
 
@@ -32,13 +32,16 @@ export const HomeScreens = () => {
 
   /*TODO: Mensajes de la acciones de la aplicacion */
   const pacientesNoFound = () => {
-    ToastAndroid.showWithGravityAndOffset(
-      'No se encuentra ningun paciente',
-      ToastAndroid.LONG,
-      ToastAndroid.BOTTOM,
-      25,
-      50,
-    );
+    Popup.show({
+      type: 'Warning',
+      title: 'Error de conexion !',
+      textBody: 'Revise su conexión a internet',
+      //buttonText:'Completar Ahora!',
+      callback: () => {
+        Popup.hide()
+        //navigation.navigate('DatosOrdenDoctorScreens' as never)
+      }
+    })
   }
 
   /*---------------------------------------------- */
@@ -56,7 +59,7 @@ export const HomeScreens = () => {
 
       } else {
 
-        setOrdenesPaciente([...ordenesPaciente, ...ordenes])
+        setOrdenesPaciente([...ordenesPaciente, ...ordenes] as never)
         setDataPaginador(resp.data.links)
         setIsLoading(false)
 
@@ -103,71 +106,71 @@ export const HomeScreens = () => {
   }, [searchCedula])
   return (
     <>
-
-      <Layout style={homeStyle.Panel}>
-        <CheckVersionAppScreens/>
-        <NetworkCheckScreens />
-        <ScrollView
-          refreshControl={
-            <RefreshControl
-              refreshing={isLoading}
-              onRefresh={refreshListadoOrdenes}
-              progressViewOffset={20}
-              colors={['#33CAFF', '#22CAFF']}
-            />
-          }
-        >
-          {/*TODO: Inicio de la estructura del header*/}
-          <Layout style={homeStyle.headerContainer}>
-            <Layout>
-              <Image source={require('../assets/images/logo.png')} style={homeStyle.headerImage} />
+      <Root>
+        <Layout style={homeStyle.Panel}>
+          <CheckVersionAppScreens />
+          <NetworkCheckScreens />
+          <ScrollView
+            refreshControl={
+              <RefreshControl
+                refreshing={isLoading}
+                onRefresh={refreshListadoOrdenes}
+                progressViewOffset={20}
+                colors={['#33CAFF', '#22CAFF']}
+              />
+            }
+          >
+            {/*TODO: Inicio de la estructura del header*/}
+            <Layout style={homeStyle.headerContainer}>
+              <Layout>
+                <Image source={require('../assets/images/logo.png')} style={homeStyle.headerImage} />
+              </Layout>
+              <Layout style={homeStyle.headerTextContainer}>
+                <Text style={homeStyle.headerText}>Tus Pacientes</Text>
+              </Layout>
             </Layout>
-            <Layout style={homeStyle.headerTextContainer}>
-              <Text style={homeStyle.headerText}>Tus Pacientes</Text>
+            {/*TODO: Fin de la estructura del header*/}
+            {/*Inicio del panel contenedor del buscador y listado de Pacientes */}
+            <Layout style={homeStyle.containerListado}>
+              <SearchBar
+                placeholder='Ingrese el nro de cedula'
+                lightTheme={true}
+                keyboardType='number-pad'
+              />
+              <Layout style={homeStyle.listado}>
+                {
+                  !isSearch ? (
+                    <FlatList
+                      data={ordenesPaciente}
+                      keyExtractor={(item, index) => index.toString()}
+                      renderItem={({ item }) => <ItemOrdenList orden={item} />}
+                      onEndReachedThreshold={0.5}
+                      onEndReached={refreshFooterList}
+                      ListFooterComponent={<LoadingFooterList loading={isLoading} />}
+
+                    />
+                  ) : (
+                    <FlatList
+                      data={ordenesPaciente}
+                      keyExtractor={(item, index) => index.toString()}
+                      renderItem={({ item }) => <ItemOrdenList orden={item} />}
+                      onEndReachedThreshold={0.5}
+                      onEndReached={refreshFooterList}
+                      ListFooterComponent={<LoadingFooterList loading={isLoading}
+
+
+                      />}
+
+                    />
+                  )
+                }
+              </Layout>
             </Layout>
-          </Layout>
-          {/*TODO: Fin de la estructura del header*/}
-          {/*Inicio del panel contenedor del buscador y listado de Pacientes */}
-          <Layout style={homeStyle.containerListado}>
-            <SearchBar
-              placeholder='Ingrese el nro de cedula'
-              lightTheme={true}
-              keyboardType='number-pad'
-            />
-            <Layout style={homeStyle.listado}>
-              {
-                !isSearch ? (
-                  <FlatList
-                    data={ordenesPaciente}
-                    keyExtractor={(item, index) => index.toString()}
-                    renderItem={({ item }) => <ItemOrdenList orden={item} />}
-                    onEndReachedThreshold={0.5}
-                    onEndReached={refreshFooterList}
-                    ListFooterComponent={<LoadingFooterList loading={isLoading} />}
+            {/*Fin del panel contenedor del buscador y listado de Pacientes */}
 
-                  />
-                ) : (
-                  <FlatList
-                    data={ordenesPaciente}
-                    keyExtractor={(item, index) => index.toString()}
-                    renderItem={({ item }) => <ItemOrdenList orden={item} />}
-                    onEndReachedThreshold={0.5}
-                    onEndReached={refreshFooterList}
-                    ListFooterComponent={<LoadingFooterList loading={isLoading}
-
-
-                    />}
-
-                  />
-                )
-              }
-            </Layout>
-          </Layout>
-          {/*Fin del panel contenedor del buscador y listado de Pacientes */}
-
-        </ScrollView>
-      </Layout>
-   
+          </ScrollView>
+        </Layout>
+      </Root>
     </>
   )
 }
@@ -188,7 +191,7 @@ function ItemOrdenList(props: any) {
   const { orden } = props
   return (
     <Layout>
-      <ListItem key={orden.id} onPress={() => navigator.navigate('DetalleEstudioScreens', { ordenId: orden.id })} bottomDivider>
+      <ListItem key={orden.id} onPress={() => navigator.navigate('DetalleEstudioScreens', { ordenId: orden.id as never})} bottomDivider>
         <ListItem.Content>
           <ListItem.Title>{orden.fecha}</ListItem.Title>
           <ListItem.Subtitle>{orden.sucursal}</ListItem.Subtitle>

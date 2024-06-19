@@ -10,6 +10,7 @@ import { NetworkCheckScreens } from '../../components/NetworkCheckScreens'
 import { CheckVersionAppScreens } from '../../components/CheckVersionAppScreens'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import { useAuthStore } from '../../store/auth/useAuthStore'
+import LinearGradient from 'react-native-linear-gradient'
 
 
 export const RecetarioListadoScreens = () => {
@@ -28,19 +29,19 @@ export const RecetarioListadoScreens = () => {
       return JSON.stringify(data)
 
     }).then((value) => {
-      if(!value.hasOwnProperty('nombre','telefono','direccion','logo')){
+      if (!value.hasOwnProperty('nombre', 'telefono', 'direccion', 'logo')) {
         setIsLoading(false)
         Popup.show({
-            type:'Danger',
-            title:'Error!',
-            textBody:'No posee datos para la orden, por favor complete dichos datos',
-            buttonText:'Completar Ahora!',
-            callback:()=>{
-                Popup.hide()
-                navigation.navigate('DatosOrdenDoctorScreens' as never)
-            }
+          type: 'Danger',
+          title: 'Error!',
+          textBody: 'No posee datos para la orden, por favor complete dichos datos',
+          buttonText: 'Completar Ahora!',
+          callback: () => {
+            Popup.hide()
+            navigation.navigate('DatosOrdenDoctorScreens' as never)
+          }
         })
-    }
+      }
       if (!value.hasOwnProperty("firma")) {
         setIsLoading(false)
         Popup.show({
@@ -50,7 +51,7 @@ export const RecetarioListadoScreens = () => {
           buttonText: 'Cree Ahora!',
           callback: () => {
             Popup.hide()
-           navigation.navigate('FirmaDigitalScreens' as never)
+            navigation.navigate('FirmaDigitalScreens' as never)
           }
         })
       }
@@ -79,13 +80,16 @@ export const RecetarioListadoScreens = () => {
   }, [navigation])
 
   return (
-    <Root>  
+    <Root>
+
+
+
       <Layout style={styles.container}>
         <NetworkCheckScreens />
-        {/* <CheckVersionAppScreens /> */}
+       <CheckVersionAppScreens /> 
         <Loader loading={isLoading} size="large" title="Cargando..." color="#ff66be" />
         <Layout style={styles.headerContainer}>
-          <Layout style={{ margin: 10 }}>
+          <Layout style={{ margin: 10, backgroundColor: 'transparent', }}>
             <TouchableOpacity
               onPress={() => navigation.navigate('HomeScreens' as never)}
             >
@@ -97,18 +101,25 @@ export const RecetarioListadoScreens = () => {
             <Text style={styles.headerText}>Recetario Medico</Text>
           </Layout>
         </Layout>
-        <Layout style={styles.containerInfoOrden}>
-          <Image source={require('../../assets/images/orden.png')} style={styles.image} />
-          <Text style={{ textAlign: 'center', fontWeight: 'bold' }}>Orden medica digital</Text>
-          <Text style={{ textAlign: 'center', alignSelf: 'center' }}>Aqui podemos crear la orden medica digital</Text>
-          <Text style={{ textAlign: 'center', alignSelf: 'center', marginBottom: 10 }}>Debe proporcionar datos del paciente, sus estudios y alguna otra observacion para la realizacion de los    mismos</Text>
-          <Button
-            accessoryRight={<MyIcon name='arrow-ios-forward-outline' />}
-            onPress={iniciarOrdenMedica}
-          >
-            Empecemos
-          </Button>
-        </Layout>
+        <LinearGradient
+          colors={['#7FDFF0', '#fff', '#fff', '#91E4F2']}
+          start={{ x: 0, y: 1 }}
+          end={{ x: 1, y: 0 }}
+          style={{ flex: 1 }}
+        >
+          <Layout style={styles.containerInfoOrden}>
+            <Image source={require('../../assets/images/orden.png')} style={styles.image} />
+            <Text style={{ textAlign: 'center', fontWeight: 'bold' }}>Orden medica digital</Text>
+            <Text style={{ textAlign: 'center', alignSelf: 'center' }}>Aqui podemos crear la orden medica digital</Text>
+            <Text style={{ textAlign: 'center', alignSelf: 'center', marginBottom: 10 }}>Debe proporcionar datos del paciente, sus estudios y alguna otra observacion para la realizacion de los    mismos</Text>
+            <Button
+              accessoryRight={<MyIcon name='arrow-ios-forward-outline' />}
+              onPress={iniciarOrdenMedica}
+            >
+              Empecemos
+            </Button>
+          </Layout>
+        </LinearGradient>
       </Layout>
     </Root>
 
@@ -118,19 +129,20 @@ export const RecetarioListadoScreens = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'white',
+    backgroundColor: 'transparent',
   },
 
   headerContainer: {
     flexDirection: 'row',
+    backgroundColor: 'transparent',
     marginHorizontal: 30,
     borderBottomWidth: 1,
     borderBottomColor: 'black',
-    marginBottom: 15
-
+ 
   },
 
   headerTextContainer: {
+    backgroundColor: 'transparent',
     justifyContent: 'center',
     marginHorizontal: 40,
 
@@ -143,7 +155,7 @@ const styles = StyleSheet.create({
   },
 
   containerInfoOrden: {
-    // flex: 1,
+    backgroundColor: 'transparent',
     justifyContent: 'center',
     alignItems: 'center'
   },

@@ -11,6 +11,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 import { includes, isEmpty } from 'lodash'
 import { doctoresApi } from '../../api/doctoresApi'
 import { ListItem } from 'react-native-elements'
+import LinearGradient from 'react-native-linear-gradient'
 
 export const RecetarioFormaEntregaScreens = () => {
   const route = useRoute()
@@ -92,12 +93,20 @@ const handleCheckedFormato = (formatoId:any) => {
 }
   return (
     <Root>
+      <LinearGradient 
+        style={{ flex: 1 }}
+        colors={['#7FDFF0', '#fff', '#fff', '#91E4F2']}
+        start={{ x: 0, y: 1 }}
+        end={{ x: 1, y: 0 }}
+      >
+
+     
         <Layout style={ styles.container }>
           <NetworkCheckScreens />
           <CheckVersionAppScreens />
           <Loader loading={isLoading} size="large" title="Cargando..." color="#ff66be" />
           <Layout style={styles.headerContainer}>
-            <Layout style={{ margin: 10 }}>
+            <Layout style={{ margin: 10,  backgroundColor: 'transparent', }}>
               <TouchableOpacity
                 onPress={() => navigation.goBack()}
               >
@@ -113,11 +122,11 @@ const handleCheckedFormato = (formatoId:any) => {
             <Image 
             style={styles.imagen }
             source={require('../../assets/images/entrega.png')}/>
-            <Text style={ styles.titulo }>Formatos de entrega:</Text>
+            <Text style={ styles.titulo }>Presiona sobre la forma de entrega:</Text>
             {
                 formatosEntrega.map((formato,index)=>{
                     return(
-                        <ListItem key={index} onPress={() => setFormatoEntregaSeleccionada(formato)} bottomDivider>
+                        <ListItem key={index} onPress={() => setFormatoEntregaSeleccionada(formato)} bottomDivider style={{ backgroundColor: 'transparent'}}>
                             <ListItem.Title>{formato.tipo}</ListItem.Title>
                             <CheckBox 
                             style={styles.checkbox}
@@ -138,6 +147,7 @@ const handleCheckedFormato = (formatoId:any) => {
               </Button>
           </Layout>
         </Layout>
+        </LinearGradient>
     </Root>
   )
 }
@@ -145,11 +155,12 @@ const handleCheckedFormato = (formatoId:any) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'white',
+    backgroundColor: 'transparent',
   },
 
   headerContainer: {
     flexDirection: 'row',
+    backgroundColor: 'transparent',
     marginHorizontal: 30,
     borderBottomWidth: 1,
     borderBottomColor: 'black',
@@ -158,6 +169,7 @@ const styles = StyleSheet.create({
   },
 
   headerTextContainer: {
+    backgroundColor: 'transparent',
     justifyContent: 'center',
     marginHorizontal: 40,
 
@@ -174,27 +186,27 @@ const styles = StyleSheet.create({
   },
 
   containerEntrega: {
-    height: 650,
+    backgroundColor: 'transparent',
+    height: 590,
+    borderRadius: 15,
     alignItems: 'center',
     marginHorizontal: 20,
-    shadowOffset: {
-      width: 0,
-      height: 9,
-    },
-    shadowOpacity: 0.50,
-    shadowRadius: 9,
-
-    elevation: 2,
+    
   },
 
   imagen:{
+    //backgroundColor: 'transparent',
     width: 300,
     height: 350,
-    marginBottom: -30
+    marginBottom: -40
   },
 
   titulo: {
     fontSize: 20,
     color: 'black'
+  },
+
+  button: {
+    marginBottom: 10,
   },
 })

@@ -6,6 +6,7 @@ import { StyleSheet, TouchableOpacity } from 'react-native'
 import { useNavigation } from '@react-navigation/native'
 import { useAuthStore } from '../../store/auth/useAuthStore'
 import { MyIcon } from '../../components/ui/MyIcon'
+import LinearGradient from 'react-native-linear-gradient'
 
 
 
@@ -46,9 +47,15 @@ const ForwardIcon = (props:any): IconElement => (
 
   return (
     <>
+    <LinearGradient
+        style={{ flex: 1 }}
+        colors={['#7FDFF0', '#fff', '#fff', '#91E4F2']}
+        start={{ x: 0, y: 1 }}
+        end={{ x: 1, y: 0 }}
+      >
       <Layout style={{
         flex: 1,
-        backgroundColor: 'white',
+        backgroundColor: 'transparent',
         alignItems: 'center'
       }}>
 
@@ -68,27 +75,27 @@ const ForwardIcon = (props:any): IconElement => (
           <Text
             style={style.title}
             category='h5'
-          >Dr/a: {usuario?.nombre}</Text>
+          >{usuario?.nombre}</Text>
         </Layout>
         <Layout style={ style.navContainer }>
         <Menu style={ style.menu}>
         <MenuItem
           style={style.subMenu }
-          title='Datos para la Orden'
+          title={<Text style={ style.textMenu }>Datos para el Doctor</Text>}
           accessoryLeft={fileIcon}
           accessoryRight={ForwardIcon}
           onPress={()=>navigation.navigate('DatosOrdenDoctorScreens' as never)}
         />
         <MenuItem
         style={style.subMenu }
-          title='Firma Digital'
+        title={<Text style={ style.textMenu }>Firma Digital</Text>}
           accessoryLeft={lockIcon}
           accessoryRight={ForwardIcon}
           onPress={()=> navigation.navigate('FirmaDigitalScreens' as never)}
         />
         <MenuItem
           style={style.subMenu }
-          title='Cerrar Sesión'
+          title={<Text style={ style.textMenu }>Cerrar Sesión</Text>}
           accessoryLeft={logOutIcon}
           accessoryRight={ForwardIcon}
           onPress={logout}
@@ -96,6 +103,7 @@ const ForwardIcon = (props:any): IconElement => (
       </Menu>
         </Layout>
       </Layout>
+      </LinearGradient>
     </>
   )
 }
@@ -103,26 +111,28 @@ const ForwardIcon = (props:any): IconElement => (
 const style = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: 'transparent',
     alignItems: 'center',
 
   },
 
   headerContainer: {
     flexDirection: 'row',
+    backgroundColor: 'transparent',
     marginHorizontal: 30,
     borderBottomWidth: 1,
     borderBottomColor: 'black',
     marginBottom: 15,
-    backgroundColor: '#fff'
 
   },
 
   headerIcon: {
-    margin: 10
+    backgroundColor: 'transparent',
+    margin: 10,
   },
 
   headerTextContainer: {
+    backgroundColor: 'transparent',
     justifyContent: 'center',
     marginHorizontal: 45,
     marginLeft: 25
@@ -138,6 +148,7 @@ const style = StyleSheet.create({
 
   details: {
     flexDirection: 'row',
+    backgroundColor: 'transparent',
     alignItems: 'center',
     marginVertical: 4,
   },
@@ -148,27 +159,35 @@ const style = StyleSheet.create({
 
   navContainer: {
     flex: 1,
+    backgroundColor: 'transparent',
     width: 350,
   },
 
   menu: {
-    backgroundColor: 'white',
+    backgroundColor: 'transparent',
     marginTop: 15,
-    fontSize: 20
     
   },
 
   subMenu:{
+    backgroundColor: 'transparent',
     height: 70,
+    borderWidth: 0,
+    borderColor: 'transparent',
     marginBottom: 5,
     shadowOffset: {
       width: 0,
       height: 9,
     },
-    shadowOpacity: 0.50,
+    shadowOpacity: 0.10,
     shadowRadius: 12.35,
-    elevation: 10,
-  }
+
+ 
+  },
+  
+  textMenu:{
+    fontSize: 21,
+  },
 
 
 })

@@ -7,6 +7,7 @@ import { MyIcon } from '../../components/ui/MyIcon'
 import { isEmpty } from 'lodash'
 import { doctoresApi } from '../../api/doctoresApi'
 import { Popup, Root } from 'popup-ui'
+import LinearGradient from 'react-native-linear-gradient'
 
 export const SugerenciaScreens = () => {
   const [form, setForm] = useState({
@@ -16,7 +17,7 @@ export const SugerenciaScreens = () => {
 
   const enviarSugerenciaDoctor = () => {
     let formData = new FormData()
-    formData.append('mensaje',form.mensaje)
+    formData.append('mensaje', form.mensaje)
     if (isEmpty(form.mensaje)) {
       Popup.show({
         type: 'Danger',
@@ -57,46 +58,53 @@ export const SugerenciaScreens = () => {
   }
   return (
     <Root>
-      <ScrollView>
-        <Layout style={styles.container}>
-          <NetworkCheckScreens />
-          <CheckVersionAppScreens />
-          <Layout style={styles.headerContainer}>
-            <Layout style={{ margin: 10 }}>
-              <TouchableOpacity
+      <LinearGradient
+        style={{ flex: 1 }}
+        colors={['#7FDFF0', '#fff', '#fff', '#91E4F2']}
+        start={{ x: 0, y: 1 }}
+        end={{ x: 1, y: 0 }}
+      >
+        <ScrollView>
+          <Layout style={styles.container}>
+            <NetworkCheckScreens />
+            <CheckVersionAppScreens />
+            <Layout style={styles.headerContainer}>
+              <Layout style={{ margin: 10, backgroundColor: 'transparent', }}>
+                <TouchableOpacity
+                >
+                  <MyIcon name="message-square-outline"
+                  />
+                </TouchableOpacity>
+              </Layout>
+              <Layout style={styles.headerTextContainer}>
+                <Text style={styles.headerText}>Sugerencias</Text>
+              </Layout>
+            </Layout>
+            <Layout style={styles.observacionContainer}>
+              <Image
+                style={styles.imagen}
+                source={require('../../assets/images/sugerencias.png')}
+              />
+              <Text style={styles.titulo}>Escriba una Sugerencia :</Text>
+              <Input
+                style={styles.input}
+                onChangeText={mensaje => setForm({ ...form, mensaje: mensaje })}
+                value={form.mensaje}
+                multiline
+                numberOfLines={9}
+                editable
+              />
+              <Button
+                style={styles.button}
+                onPress={enviarSugerenciaDoctor}
+                accessoryRight={<MyIcon name='arrow-ios-forward-outline' />}
               >
-                <MyIcon name="message-square-outline"
-                />
-              </TouchableOpacity>
-            </Layout>
-            <Layout style={styles.headerTextContainer}>
-              <Text style={styles.headerText}>Sugerencias</Text>
+                <Text>Enviar</Text>
+              </Button>
             </Layout>
           </Layout>
-          <Layout style={styles.observacionContainer}>
-            <Image
-              style={styles.imagen}
-              source={require('../../assets/images/sugerencias.png')}
-            />
-            <Text style={styles.titulo}>Escriba una Sugerencia :</Text>
-            <Input
-              style={styles.input}
-              onChangeText={ mensaje => setForm({ ...form, mensaje: mensaje})} 
-              value={ form.mensaje }
-              multiline
-              numberOfLines={9}
-              editable
-            />
-            <Button
-              style={styles.button}
-              onPress={enviarSugerenciaDoctor}
-              accessoryRight={<MyIcon name='arrow-ios-forward-outline' />}
-            >
-              <Text>Enviar</Text>
-            </Button>
-          </Layout>
-        </Layout>
-      </ScrollView>
+        </ScrollView>
+      </LinearGradient>
     </Root>
   )
 }
@@ -104,11 +112,12 @@ export const SugerenciaScreens = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'white'
+    backgroundColor: 'transparent',
   },
 
   headerContainer: {
     flexDirection: 'row',
+    backgroundColor: 'transparent',
     marginHorizontal: 30,
     borderBottomWidth: 1,
     borderBottomColor: 'black',
@@ -119,6 +128,7 @@ const styles = StyleSheet.create({
 
 
   headerTextContainer: {
+    backgroundColor: 'transparent',
     justifyContent: 'center',
     marginHorizontal: 50,
     marginBottom: 5
@@ -134,6 +144,7 @@ const styles = StyleSheet.create({
 
   observacionContainer: {
     flex: 1,
+    backgroundColor: 'transparent',
     alignItems: 'center',
     marginHorizontal: 20
 

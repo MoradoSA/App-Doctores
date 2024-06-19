@@ -31,7 +31,7 @@ const fadeAnimation: StackCardStyleInterpolator = ({ current }) => {
   }
 }
 
-export const StackNavigation = () => {
+export const CuentaStackNavigation = () => {
   return (
     <Stack.Navigator 
     initialRouteName='CuentaScreens'

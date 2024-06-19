@@ -1,15 +1,16 @@
 import { StackCardStyleInterpolator, createStackNavigator } from '@react-navigation/stack';
 import { HomeScreens } from '../screens/HomeScreens';
+import {  VerOrdenScreens } from '../screens/Estudios/VerOrdenScreens';
+import { VerEstudioScreens } from '../screens/Estudios/VerEstudioScreens';
+import { DetalleEstudioScreens } from '../screens/Estudios/DetalleEstudioScreens';
 import { NetworkCheckScreens } from '../components/NetworkCheckScreens';
 import { CheckVersionAppScreens } from '../components/CheckVersionAppScreens';
-import { DetalleEstudioScreens } from '../screens/Estudios/DetalleEstudioScreens';
-import { VerEstudioScreens } from '../screens/Estudios/VerEstudioScreens';
-import {  VerOrdenScreens } from '../screens/Estudios/VerOrdenScreens';
-
+import { InicioBienvenidoScreens } from '../screens/Estudios/InicioBienvenidoScreens';
 
 export type RootStackParams = {
  
   HomeScreens: undefined;
+  InicioBienvenidoScreens: undefined;
   DetalleEstudioScreens: undefined;
   VerEstudioScreens: undefined;
   VerOrdenScreens: undefined;
@@ -33,12 +34,13 @@ const fadeAnimation: StackCardStyleInterpolator = ({ current }) => {
 export const HomeStackNavigation = () => {
   return (
     <Stack.Navigator 
-    initialRouteName='HomeScreens'
+    initialRouteName='InicioBienvenidoScreens'
     screenOptions={{
       headerShown: false,
     }}>
      
       <Stack.Screen options={{ cardStyleInterpolator: fadeAnimation }} name="HomeScreens" component={HomeScreens} />
+      <Stack.Screen options={{ cardStyleInterpolator: fadeAnimation }} name="InicioBienvenidoScreens" component={InicioBienvenidoScreens} />
       <Stack.Screen options={{ cardStyleInterpolator: fadeAnimation }} name="DetalleEstudioScreens" component={DetalleEstudioScreens} />
       <Stack.Screen options={{ cardStyleInterpolator: fadeAnimation }} name="VerEstudioScreens" component={VerEstudioScreens} />
       <Stack.Screen options={{ cardStyleInterpolator: fadeAnimation }} name="VerOrdenScreens" component={VerOrdenScreens} />

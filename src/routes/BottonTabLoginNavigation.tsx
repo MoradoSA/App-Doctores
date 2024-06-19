@@ -5,6 +5,9 @@ import { HomeStackNavigation } from './HomeStackNavigation';
 import { RecetarioStackNavigation } from './RecetarioStackNavigation';
 import { SugerenciaStackNavigation } from './SugerenciaStackNavigation';
 import { CuentaStackNavigation } from './CuentaStackNavigation';
+import { LoadingSreens } from '../screens/LoadingSreens';
+import { LoginScreens } from '../screens/LoginScreens';
+import { SucursalesScreens } from '../screens/SucursalesScreens';
 
 
 const Tab = createBottomTabNavigator();
@@ -19,7 +22,7 @@ const CustomTabBarButton = ({ children, onPress}: any) =>{
   </TouchableOpacity>
 }
 
-export const  BottonTabsNavigation = () => {
+export const  BottonTabLoginNavigation = () => {
   return (
     <Tab.Navigator 
     initialRouteName='HomeScreens'
@@ -34,13 +37,30 @@ export const  BottonTabsNavigation = () => {
         right: 20,
         backgroundColor: '#fff',
         borderRadius: 15,
-        height: 70,
+        height: 65,
        ...styles.shadow
       }
 
     }}
     >
-      <Tab.Screen name="Home" component={HomeStackNavigation} options={{
+      <Tab.Screen name="Inicio" component={LoginScreens} options={{
+        tabBarIcon: ({focused}) =>(
+          <Layout>
+            <Icon name='person-outline' style={{
+              with: 28,
+              height: 28,
+              resizeMode: 'contain',
+              tintColor: focused ? '#1A4ADF' : 'black',
+              
+            }}/>
+            <Text style={{
+              fontSize: 12,
+              color: focused ? '#1A4ADF' : 'black',
+            }}>Inicio</Text>
+          </Layout>
+        )
+      }}/>
+      <Tab.Screen name="Sucursales" component={SucursalesScreens} options={{
         tabBarIcon: ({focused}) =>(
           <Layout>
             <Icon name='home-outline' style={{
@@ -53,64 +73,11 @@ export const  BottonTabsNavigation = () => {
             <Text style={{
               fontSize: 12,
               color: focused ? '#1A4ADF' : 'black',
-            }}>Panel</Text>
+            }}>Sucursales</Text>
           </Layout>
         )
       }}/>
-      <Tab.Screen name="Recetario" component={RecetarioStackNavigation} options={{
-        tabBarIcon: ({focused}) =>(
-          <Layout>
-            <Icon name='file-text-outline' style={{
-              with: 28,
-              height: 28,
-              resizeMode: 'contain',
-              tintColor: focused ? '#1A4ADF' : 'black',
-              
-            }}/>
-            <Text style={{
-              fontSize: 12,
-              color: focused ? '#1A4ADF' : 'black',
-            }}>Recetario</Text>
-          </Layout>
-        )
-      }}/>
-      <Tab.Screen name="Sugerencia" component={SugerenciaStackNavigation} options={{
-        tabBarIcon: ({focused}) =>(
-          <Layout>
-            <Icon name='message-circle-outline' style={{
-              with: 28,
-              height: 28,
-              resizeMode: 'contain',
-              tintColor: focused ? '#1A4ADF' : 'black',
-              
-            }}/>
-            <Text style={{
-              fontSize: 12,
-              color: focused ? '#1A4ADF' : 'black',
-            }}>Sugerencia</Text>
-          </Layout>
-        )
-      }} />
-
-      <Tab.Screen name="Settings" component={CuentaStackNavigation} options={{
-        tabBarIcon: ({focused}) =>(
-          <Layout>
-            <Icon name='settings-2-outline' style={{
-              with: 28,
-              height: 28,
-              resizeMode: 'contain',
-              tintColor: focused ? '#1A4ADF' : 'black',
-              
-            }}/>
-            <Text style={{
-              fontSize: 12,
-              color: focused ? '#1A4ADF' : 'black',
-            }}>Cuenta</Text>
-          </Layout>
-        )
-      }} />
-      
-
+    
     </Tab.Navigator>
   );
 }

@@ -3,15 +3,15 @@ import { StyleSheet } from "react-native";
 //TODO: Estilos para el diseño del logo
 export const styles = StyleSheet.create({
     container: {
-      height: 140,
-      width: 140,
+      height: 160,
+      width: 160,
       backgroundColor: 'white',
       borderRadius: 100,
       justifyContent: 'center',
       alignItems: 'center',
       shadowOffset: {
         width: 0,
-        height: 9,
+        height: 10,
       },
       shadowOpacity: 0.50,
       shadowRadius: 12.35,
@@ -21,7 +21,7 @@ export const styles = StyleSheet.create({
     },
   
     imagen: {
-      width: 130,
-      height: 130,
+      width: 150,
+      height: 150,
     }
   });
