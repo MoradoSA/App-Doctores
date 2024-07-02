@@ -2,45 +2,28 @@
 import { Button, Layout, Text } from '@ui-kitten/components';
 import React, { useEffect, useRef, useState } from 'react';
 import { StyleSheet, Alert, } from 'react-native';
-import { WebView } from 'react-native-webview';
 import { useAuthStore } from '../../store/auth/useAuthStore';
 import { useRoute } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import RNFS from 'react-native-fs'
 import LinearGradient from 'react-native-linear-gradient';
+import RNHTMLtoPDF from 'react-native-html-to-pdf';
+import Share from 'react-native-share'
+import WebView from 'react-native-webview';
+import * as htmlToImage from 'html-to-image';
 
 export const RecetarioGeneradorScreens = () => {
   const { usuario } = useAuthStore()
   const route = useRoute()
-  const webViewRef = useRef(null);
+  const webViewRef = useRef<HTMLDivElement>(null);
   const [isImage, setIsImage] = useState("")
+  const [sourcePDF, setSourcePDF] = useState("")
+  const [base64PDF, setBase64PDF] = useState("")
+  const [isLoading, setIsLoading] = useState(false)
   let dataOrden = ''
   let logoClinica = ''
   let firmaDoctor = ''
 
-  const captureImage = async () => {
-    try {
-      const uri = await captureWebView(webViewRef);
-      Alert.alert('Captura Exitosa', `Imagen capturada: ${uri}`);
-      // Aquí puedes usar la imagen capturada, por ejemplo, mostrarla en un Image componente
-    } catch (error) {
-      Alert.alert('Error al Capturar', 'Hubo un problema al intentar capturar la imagen.');
-      console.error('Error capturando imagen:', error);
-    }
-  };
-
-  const captureWebView = async (webViewRef: any) => {
-    if (!webViewRef.current) {
-      throw new Error('WebView no ha sido montado todavía');
-    }
-
-    const uri = await webViewRef.current.captureScreen({
-      format: 'jpg',
-      quality: 1,
-    });
-
-    return uri;
-  };
 
   const renderImage = async () => {
 
@@ -60,202 +43,233 @@ export const RecetarioGeneradorScreens = () => {
     let observacion = route.params?.observaciones
 
 
-    const image =
-      ` <html>
+    const image = `
+      <html>
         <body>
-          <header class="container">
-            <div class="nombreClinica">
-              <h1 class="titulo">${nombreClinica}</h1>
-            </div>
-            <div class="logoClinica">
-            <img class="logo" src='data:image/jpeg;base64,${logoClinica}' alt='logo'/>
-            </div>
-          </header>
-          <br>
-          <img src='data:image/jpeg;base64,${logoClinica}' width='900px' height='850px' style='position:absolute;margin:auto;left:5%;top:25%;opacity:0.2;z-index:-3;'/>
-          <div class="containerRecetario">
-            <h2 class="datosPaciente">Datos de la Orden:</h2>
+          <div class="container">
+              <div class="header">
+                <div class="nombreClinica">
+                  <h1 class="titulo">${nombreClinica}</h1>
+                </div>
+                <div class="circle">
+                  <img class="logo" src='data:image/jpeg;base64,${logoClinica}' alt='logo'/>
+                </div>
+              </div>
+               <img src='data:image/jpeg;base64,${logoClinica}' width='900px' height='850px' style='position:absolute;margin:auto;left:5%;top:25%;opacity:0.2;z-index:-3;'/>
+              <table class="table">
+                  <thead>
+                    <tr>
+                      <th>Paciente</th>
+                      <th>Nro. Cedula</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>${pacienteNombre}</td>
+                      <td>${edadPaciente}</td>
+                    </tr>
+                  </tbody>
+              </table>
+              <table class="table">
+                  <thead>
+                    <tr>
+                    <th>Estudio a Realizar</th>
+                      <th>Forma de Entrga</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                     <td>${listaEstudios.join()}</td>
+                      <td>${formaEntrega}</td>
+                    </tr>
+                  </tbody>
+              </table>
+              <table class="table">
+                  <thead>
+                    <tr>
+                    <th>Seguro</th>
+                      <th>Observación</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                     <td>${nombreSeguro}</td>
+                      <td>${observacion}</td>
+                    </tr>
+                  </tbody>
+              </table>
+              <table class="table1">
+                  <thead>
+                    <tr>
+                    <th>Dr/a: ${doctor}</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                     <td>Nro Registro: ${nroRegistro} <br/>
+                       <img src='data:image/png;base64,${firmaDoctor}'  class="firma" style='position:relative;top:-115;z-index:-4;' width='120px'/><br/>
+                        <br/>
+                         <h3>Direccion: ${direccion}</h3>\
+                        <h3>Tel: ${telefono}</h3>\
+                     </td>
+                    </tr>
+                  </tbody>
+              </table>
+              <footer class="footer">
+                <div>
+                  <p class="infoSucursal">Sucursal de Ñemby <span>(0985) 677 912</span></p>
+                  <p class="infoSucursal">Sucursal de Mariano <span>(0982) 100 609</span></p>
+                  <p class="infoSucursal">Sucursal de Azara <span>(0984) 557 644</span></p>
+                  <p class="infoSucursal">Sucursal de Itaugua <span>(0981) 636 301</span></p>
+                  <p class="infoSucursal">Sucursal de Luque <span>(0984) 557 179</span></p>
+                </div>
+                <div>
+                    <p class="infoSucursal">Sucursal de KM5 <span>(0985) 464 550</span></p>
+                  <p class="infoSucursal">Sucursal de San Lorenzo <span>(0984) 560 367</span></p>
+                  <p class="infoSucursal">Sucursal de Lambare <span>(0986) 227 216</span></p>
+                  <p class="infoSucursal">Sucursal de Laboratorio <span>(0981) 515 652</span></p>
+                  <p class="infoSucursal">Sucursal de Carapegua <span>(0984) 389 512</span></p>
+                </div>
+              </footer>
           </div>
-            <main class="cards">
-              <section class="card">
-                <h1 class="nombre">Nombre del Paciente</h1>
-                 <hr/>
-                 <br/>
-                <h3 class="datos">${pacienteNombre}</h3>
-              </section>
-
-              <section class="card">
-                <h1 class="nombre">Nro de Cedula</h1>
-                  <hr/>
-                  <br/>
-                <h3 class="datos">${edadPaciente}</h3>
-              </section>
-            </main>
-            <br/> <br/> <br/>
-            <main class="cards">
-              <section class="card">
-                <h1 class="nombre">Listado de estudios:</h1>
-                 <hr/>
-                 <br/>
-                <h3 class="datos">
-                  <ul>
-                    ${listaEstudios.join('')}
-                  <ul>
-                </h3>
-              </section>
-
-              <section class="card">
-                <h1 class="nombre">Formato de entrega:</h1>
-                  <hr/>
-                  <br/>
-                <h3 class="datos">${formaEntrega}</h3>
-              </section>
-            </main>
-
-            <br/> <br/>
-            <main class="cards">
-              <section class="card">
-                <h1 class="nombre">Seguro: </h1>
-                 <hr/>
-                 <br/>
-                <h3 class="datos">${nombreSeguro}  ${ciudadCeguro}</h3>
-              </section>
-
-              <section class="card">
-                <h1 class="nombre">Observaciones:</h1>
-                  <hr/>
-                  <br/>
-                <h3 class="datos">${observacion}</h3>
-              </section>
-            </main>
-
-            <main class="cards">
-              <section class="card">
-                <h1 class="nombre">Doctor: ${doctor} </h1>
-                 <hr/>
-                 <br/>
-                <h3 class="datos">${nroRegistro}</h3>
-                <img src='data:image/png;base64,${firmaDoctor}' style='position:relative;top:-50;z-index:-4;' width='120px'/>
-              </section>
-
-              <section class="card">
-                <h1 class="nombre">Direccion: ${direccion}</h1>
-                  <hr/>
-                  <br/>
-                <h3 class="datos">Telefono: ${telefono}</h3>
-              </section>
-            </main>
-            <footer class="footer">
-
-            </footer>
         </body>
-      </html> 
+      </html>
       <style>
-      *{
-         margin:0;
-          padding:0;
-          box-sizing: border-box;
-          background: linear-gradient(rgb(179, 229, 252 , 0.01), rgb(253, 254, 254, 0.09), rgb(179, 229, 252 ,0.05),  rgb(253, 254, 254,0.03))
-          
+        *{
+          margin: 0;
+          padding: 0;
+          box-sizing: content-box;
         }
-          .container{
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            grid-gap: 30px;
-            grid-auto-rows: minmax(200px, auto);
-            margin-top: 32px;
-            width: 100%;
-            height: 230px;
-            justify-content: center;
-            align-items: center;
-            place-items: center;
-            border-bottom: 1px solid black
-          }
-          
-          .nombreClinica {
-            margin-left: 22%;
-          }
 
-          .titulo{
-            font-size: 60px;
-            color: "#4D5656"
+        .container {
+          width: 100%;
+          height: 100%;
+          border: solid #5B6DCD 10px;
+          //background: linear-gradient(25deg, #91E4F2 #fff );
+        }
+
+        .header {
+          display: grid;
+          grid-template-columns: repeat(2, 1fr);
+          grid-gap: 30px;
+          grid-auto-rows: minmax(100px, auto);
+          margin-top: 32px;
+        }
+
+        .nombreClinica {
+          margin-top: 35px;
+          margin-left: 19%;
+          border-bottom: solid #ccc 10px;
+         
+        }
+
+        .titulo{
+          font-size: 62px;
+          color: black;
+          font-weight: 900;
+            
+  
+        }
+
+        .circle {
+            width: 210px; 
+            height: 210px; 
+            border-radius: 50%;
+            background-color: #fff; 
+            margin-top: -20px;
+            margin-left: 22%;
+            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.3), 0 6px 20px  rgba(0, 0, 0, 0.25);
   
           }
+          
 
           .logo{
-            width: 200px;
-            height: 200px;
+            width: 190px;
+            height: 190px;
             border-radius: 50%;
-          
+            margin: 10px;          
           }
-          
-          .containerRecetario{
-            display: flex;
+
+          .table {
+            width: 90%;
+            font-family: Arial, Helvetica, sans-serif;
+            border-collapse: collapse;
+            margin-top: 80px;
+            margin-left: 50px;
             justify-content: center;
             align-items: center;
             place-items: center;
-            margin: 10px;
+            text-align: center;
+      
+           }
+
+           .table1 {
+            width: 90%;
+            font-family: Arial, Helvetica, sans-serif;
+            border-collapse: collapse;
+            margin-top: 80px;
+            margin-left: 50px;
+            justify-content: center;
+            align-items: center;
+            place-items: center;
+            text-align: center;
+           }
+
+           .table1 th {
+              font-size: 30px;
+           }
+
+           .table1 td {
+              font-size: 20px;
+           }
+
+           .table td, .table th {
+            height: 60px;
+            border: 1px solid #ddd;
+            padding: 8px;
+            list-style:none;
+            font-size: 30px;
           }
 
-          .datosPaciente{
-            font-size: 60px;
-            color: "#4D5656";
-            margin-bottom: 30px;
-          }
+         .table th {
+            padding-top: 12px;
+            padding-bottom: 12px;
+            text-align: left;
+            background-color: #04AA6D;
+            color: white;
+            text-align: center;
             
+          }
 
-         main.cards {
+          .firma {
+            width: 160px;
+            height: 90px;
+            background: none;
+            opacity: 0.5;
+          }
+
+          .footer {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             grid-gap: 30px;
             grid-auto-rows: minmax(100px, auto);
+            margin-top: 185px;
+            justify-content: center;
             align-items: center;
+            place-items: center;
             text-align: center;
-            padding: 1rem 1.5rem;
-            max-height: 588px;
-            margin-left: 28px;
           }
 
-         .nombre{
-           font-size: 40px;
-
-         }
-
-         .datos{
-            top: 50px;
-            font-size: 30px;
-         }
-
-         ul {
-          list-style:none
-         }
-
-         .containerDatosDoctor{
-           display: flex;
-           justify-content: center;
-           align-items: center;
-           place-items: center;
-           margin-top: -80px;
-           margin-botton: -100px
+          .infoSucursal{
+            text-align: center;
+            font-size: 22px;
+            margin: 18px;
+           font-weight: bold;
           }
 
-          .firma{ 
-            position:relative;
-            z-index:-4;
-          }
-
-          .nombreDoctor{
-             left: -90px
-          }
-
-          .footer{
-            position: absolute;
-            border: 1px solid black
-          }
-
-         
 
       </style>
+
       `
 
     setIsImage(image)
@@ -269,10 +283,48 @@ export const RecetarioGeneradorScreens = () => {
       logoClinica = await RNFS.readFile(data.logo, "base64")
       firmaDoctor = await RNFS.readFile(data.firma, "base64")
       renderImage()
+      convertToPDFOrden()
     } catch (ex) {
       console.log(ex)
     }
   }
+
+  const handleShareOrden = () => {
+    // setIsLoading(true)
+    // RNFS.readFile(sourcePDF,'base64').then((base64Data)=>{
+    //     setIsLoading(false)
+    let base64Data = `data:application/pdf;base64,` + base64PDF;
+    Share.open({
+      message: "Hola, aqui le comparto su orden:\n",
+      url: base64Data,
+      title: 'Orden de realizacion de estudios',
+      saveToFiles: false,
+      subject: 'Orden de realizacion de estudios',
+      type: 'application/pdf'
+    }).then((result) => {
+      //
+    })
+      .catch((e) => {
+        console.log(e)
+      })
+    // })
+  }
+
+  const convertToPDFOrden =  () => {
+    RNHTMLtoPDF.convert({
+      base64: true,
+      fileName: 'orden-digital',
+      width: 840,
+      height: 792,
+      html:  isImage
+    }).then((result) => {
+      setSourcePDF(result.filePath)
+      setBase64PDF(result.base64)
+    }).catch((err) => {
+     console.log(err)
+    })
+  }
+
   useEffect(() => {
     getDataOrden()
 
@@ -282,7 +334,7 @@ export const RecetarioGeneradorScreens = () => {
 
 
   return (
-    <LinearGradient 
+    <LinearGradient
       style={{ flex: 1 }}
       colors={['#7FDFF0', '#fff', '#fff', '#91E4F2']}
       start={{ x: 0, y: 1 }}
@@ -291,11 +343,13 @@ export const RecetarioGeneradorScreens = () => {
       <Layout style={styles.container}>
         <Layout style={styles.recetarioContainer}>
           <WebView
-            style={styles.recetarioViewer }
+            ref={webViewRef}
+            style={styles.recetarioViewer}
             source={{ html: isImage }}
           />
         </Layout>
-        <Button>
+        <Button style={styles.button}
+          onPress={handleShareOrden}>
           <Text>Compartir</Text>
         </Button>
       </Layout>
@@ -310,7 +364,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: 'transparent'
   },
- 
+
 
   recetarioContainer: {
     width: 350,
@@ -318,7 +372,7 @@ const styles = StyleSheet.create({
     top: -40,
     borderWidth: 5,
     borderRadius: 10,
-    borderColor: '#E0E0E0',
+    borderColor: '#F4F6F7',
     shadowOffset: {
       width: 0,
       height: 9,
@@ -327,21 +381,23 @@ const styles = StyleSheet.create({
     shadowRadius: 9,
 
     elevation: 10,
-   
+
   },
 
   recetarioViewer: {
     flex: 1,
-  
   },
 
   button: {
-    position: 'absolute',
+    width: 150,
+    height: 50,
     bottom: 20,
     alignSelf: 'center',
     padding: 10,
-    borderRadius: 50,
+    borderRadius: 10,
   },
+
+
   buttonText: {
     color: 'white',
     fontSize: 16,

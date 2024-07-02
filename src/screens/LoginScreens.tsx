@@ -77,7 +77,7 @@ export const LoginScreens = () => {
     } else {
       // setIsLoading(true)
 
-      const wasSuccessfull = await login(form.cedula, form.password)
+      const wasSuccessfull = await login( form.cedula, form.password )
       if (wasSuccessfull) {
         ingresoCorrecto()
         //setIsLoading(false)

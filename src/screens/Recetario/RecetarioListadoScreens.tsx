@@ -8,105 +8,145 @@ import { MyIcon } from '../../components/ui/MyIcon'
 import { useLinkTo, useNavigation } from '@react-navigation/native'
 import { NetworkCheckScreens } from '../../components/NetworkCheckScreens'
 import { CheckVersionAppScreens } from '../../components/CheckVersionAppScreens'
-import AsyncStorage from '@react-native-async-storage/async-storage'
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import RNFS from 'react-native-fs'
 import { useAuthStore } from '../../store/auth/useAuthStore'
 import LinearGradient from 'react-native-linear-gradient'
+import { isEmpty } from 'lodash'
 
 
 export const RecetarioListadoScreens = () => {
   const navigation = useNavigation()
-  const [isLoading, setIsLoading] = useState(true)
+  const [isLoading, setIsLoading] = useState(false)
   const linkTo = useLinkTo()
   const { userData } = useAuthStore()
+  let dataOrden = ''
+  let logoClinica = ''
+  let firmaDoctor = ''
 
 
   const iniciarOrdenMedica = () => {
     navigation.navigate('RecetarioPacienteScreens' as never)
   }
 
-  const validarDatosDoctor = () => {
-    AsyncStorage.getItem("@ordenData").then((data) => {
-      return JSON.stringify(data)
-
-    }).then((value) => {
-      if (!value.hasOwnProperty('nombre', 'telefono', 'direccion', 'logo')) {
-        setIsLoading(false)
+  const getDataOrden = async () => {
+    try {
+      let data = JSON.parse(await AsyncStorage.getItem("@ordenData"))
+      dataOrden = data
+      logoClinica = await RNFS.readFile(data.logo, "base64")
+      firmaDoctor = await RNFS.readFile(data.firma, "base64")
+      if (isEmpty(firmaDoctor)) {
         Popup.show({
-          type: 'Danger',
-          title: 'Error!',
-          textBody: 'No posee datos para la orden, por favor complete dichos datos',
-          buttonText: 'Completar Ahora!',
+          type: 'Warning',
+          title: 'Error',
+          textBody: 'No tiene la firma del doctor',
+          buttontext: 'Regresar',
+          callback: () => {
+            Popup.hide()
+            navigation.navigate('FirmaDigitalScreens' as never)
+          }
+        })
+      } else if (isEmpty(logoClinica)) {
+        Popup.show({
+          type: 'Warning',
+          title: 'Error',
+          textBody: 'No tiene los datos de la Clinica',
+          buttontext: 'Regresar',
           callback: () => {
             Popup.hide()
             navigation.navigate('DatosOrdenDoctorScreens' as never)
           }
         })
       }
-      if (!value.hasOwnProperty("firma")) {
-        setIsLoading(false)
+    } catch (error) {
+      Popup.show({
+        type: 'Warning',
+        title: 'Error!',
+        textBody: 'No tiene, ni la firma, ni los datos de la clinica',
+        buttonText: 'Ok',
+        callback() {
+          Popup.hide()
+        }
+      })
+    }
+  }
+
+  const  getDataApp  = async() =>{
+    try {
+        let data = JSON.parse(await AsyncStorage.getItem("@ordenData"))
+
+      //TODO: Validamos si es que existe los datos de la clinica.  
+      if(isEmpty(data.logo)){
         Popup.show({
-          type: 'Danger',
+          type: 'Warning',
           title: 'Error!',
-          textBody: 'Necesita un firma digital, para crear una orden',
-          buttonText: 'Cree Ahora!',
-          callback: () => {
+          textBody: 'No tiene los datos de la clinica',
+          buttonText: 'Ok',
+          callback() {
+            Popup.hide()
+            navigation.navigate('DatosOrdenDoctorScreens' as never)
+          }
+        })
+      }else{
+        logoClinica = await RNFS.readFile(data.logo, "base64")
+      }
+
+      //TODO: Validamos si es que el doctor ya tiene una firma.
+      if(isEmpty(data.firma)){
+        Popup.show({
+          type: 'Warning',
+          title: 'Error!',
+          textBody: 'No tiene la firma del doctor',
+          buttonText: 'Ok',
+          callback() {
             Popup.hide()
             navigation.navigate('FirmaDigitalScreens' as never)
           }
         })
+      }else{
+        firmaDoctor = await RNFS.readFile(data.firma, "base64")
+        console.log(firmaDoctor)
       }
-      setIsLoading(false)
-    }).catch((ex) => {
-      Popup.show({
-        type: 'Danger',
-        title: 'Error!',
-        textBody: 'No se puede generar la orden, verifique sus datos',
-        buttonText: 'Completar Ahora!',
-        callback: () => {
-          Popup.hide()
-          navigation.navigate('CuentaScreens' as never)
-        }
-      })
-      setIsLoading(false)
-    })
+
+    } catch (error) {
+      console.log(error)
+    }
   }
 
   useEffect(() => {
-    const unsubscribe = navigation.addListener('focus', () => {
-      validarDatosDoctor()
-      console.log(JSON.stringify(userData))
-    });
-    return unsubscribe;
-  }, [navigation])
+    //getDataOrden()
+    getDataApp()
+
+  }, [])
 
   return (
     <Root>
 
 
+      <LinearGradient
+        colors={['#7FDFF0', '#fff', '#fff', '#91E4F2']}
+        start={{ x: 0, y: 1 }}
+        end={{ x: 1, y: 0 }}
+        style={{ flex: 1 }}
+      >
+        <Layout style={styles.container}>
+          <NetworkCheckScreens />
+          <CheckVersionAppScreens />
+          <Loader loading={isLoading} size="large" title="Cargando..." color="#ff66be" />
+          <Layout style={styles.headerContainer}>
+            <Layout style={{ margin: 10, backgroundColor: 'transparent', }}>
+              <TouchableOpacity
+                onPress={() => navigation.navigate('HomeScreens' as never)}
+              >
+                <MyIcon name="arrow-back-outline"
+                />
+              </TouchableOpacity>
+            </Layout>
+            <Layout style={styles.headerTextContainer}>
+              <Text style={styles.headerText}>Recetario Medico</Text>
+            </Layout>
+          </Layout>
 
-      <Layout style={styles.container}>
-        <NetworkCheckScreens />
-       <CheckVersionAppScreens /> 
-        <Loader loading={isLoading} size="large" title="Cargando..." color="#ff66be" />
-        <Layout style={styles.headerContainer}>
-          <Layout style={{ margin: 10, backgroundColor: 'transparent', }}>
-            <TouchableOpacity
-              onPress={() => navigation.navigate('HomeScreens' as never)}
-            >
-              <MyIcon name="arrow-back-outline"
-              />
-            </TouchableOpacity>
-          </Layout>
-          <Layout style={styles.headerTextContainer}>
-            <Text style={styles.headerText}>Recetario Medico</Text>
-          </Layout>
-        </Layout>
-        <LinearGradient
-          colors={['#7FDFF0', '#fff', '#fff', '#91E4F2']}
-          start={{ x: 0, y: 1 }}
-          end={{ x: 1, y: 0 }}
-          style={{ flex: 1 }}
-        >
           <Layout style={styles.containerInfoOrden}>
             <Image source={require('../../assets/images/orden.png')} style={styles.image} />
             <Text style={{ textAlign: 'center', fontWeight: 'bold' }}>Orden medica digital</Text>
@@ -119,8 +159,8 @@ export const RecetarioListadoScreens = () => {
               Empecemos
             </Button>
           </Layout>
-        </LinearGradient>
-      </Layout>
+        </Layout>
+      </LinearGradient>
     </Root>
 
   )
@@ -138,7 +178,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 30,
     borderBottomWidth: 1,
     borderBottomColor: 'black',
- 
+
   },
 
   headerTextContainer: {

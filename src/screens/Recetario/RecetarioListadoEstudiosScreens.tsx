@@ -127,8 +127,6 @@ export const RecetarioListadoEstudiosScreens = () => {
             >
                 <Layout style={styles.container}>
                     <Loader loading={isLoading} size="large" title="Cargando..." color="#ff66be" />
-                    <NetworkCheckScreens />
-                    <CheckVersionAppScreens />
                     <Layout style={styles.headerContainer}>
                         <Layout style={{ margin: 10,  backgroundColor: 'transparent', }}>
                             <TouchableOpacity

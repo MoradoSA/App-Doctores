@@ -6,7 +6,7 @@ export const loadingStyle = StyleSheet.create({
       justifyContent: 'center',
       alignItems: 'center',
       alignContent: 'center',
-      backgroundColor: '#fff'
+      backgroundColor: 'transparent'
     },
 
     title: {
@@ -26,5 +26,7 @@ export const loadingStyle = StyleSheet.create({
       shadowRadius: 9,
   
       elevation: 10,
-    }
+    },
+
+   
 });

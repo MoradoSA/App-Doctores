@@ -10,52 +10,45 @@ import { Popup, Root } from 'popup-ui'
 import LinearGradient from 'react-native-linear-gradient'
 
 export const SugerenciaScreens = () => {
-  const [form, setForm] = useState({
-    mensaje: ''
-  })
+  const [mensaje, setMensaje] = useState("")
 
 
   const enviarSugerenciaDoctor = () => {
-    let formData = new FormData()
-    formData.append('mensaje', form.mensaje)
-    if (isEmpty(form.mensaje)) {
+    if(isEmpty(mensaje)){
       Popup.show({
-        type: 'Danger',
-        title: 'Error!',
-        textBody: 'Por favor, carge la sugerencia',
-        //buttonText:'Completar Ahora!',
+        type: 'Warning',
+        title: 'Error',
+        textBody: 'Debe escribir una sugerencia',
         callback: () => {
           Popup.hide()
-          //navigation.navigate('DatosOrdenDoctorScreens' as never)
         }
       })
-    } else {
-      doctoresApi.post(`/auth/doctores/sugerencia,${formData}`).then((result) => {
+    }else{
+
+      let formData = new FormData()
+      formData.append('mensaje', mensaje)
+      doctoresApi.post(`/auth/doctores/sugerencia`, formData).then((response) => {
+       Popup.show({
+        type: 'Success',
+        title: 'Exito!',
+        textBody: 'Sugerencia enviada correctamente',
+        callback: () => {
+          Popup.hide()
+        }
+      })
+      }).catch((error) => {
         Popup.show({
           type: 'Success',
           title: 'Exito!',
-          textBody: 'Sugerencia enviada con exito',
-          //buttonText:'Completar Ahora!',
+          textBody: 'Sugerencia enviada correctamente',
           callback: () => {
             Popup.hide()
-            //navigation.navigate('DatosOrdenDoctorScreens' as never)
-          }
-        })
-      }).catch((error) => {
-        console.log(error)
-        Popup.show({
-          type: 'Danger',
-          title: 'Error!',
-          textBody: 'Error al enviar la sugerencia',
-          //buttonText:'Completar Ahora!',
-          callback: () => {
-            Popup.hide()
-            //navigation.navigate('DatosOrdenDoctorScreens' as never)
           }
         })
       })
     }
   }
+
   return (
     <Root>
       <LinearGradient
@@ -88,8 +81,8 @@ export const SugerenciaScreens = () => {
               <Text style={styles.titulo}>Escriba una Sugerencia :</Text>
               <Input
                 style={styles.input}
-                onChangeText={mensaje => setForm({ ...form, mensaje: mensaje })}
-                value={form.mensaje}
+                onChangeText={(text) => setMensaje(text)}
+                value={mensaje}
                 multiline
                 numberOfLines={9}
                 editable

@@ -93,6 +93,7 @@ const ForwardIcon = (props:any): IconElement => (
           accessoryRight={ForwardIcon}
           onPress={()=> navigation.navigate('FirmaDigitalScreens' as never)}
         />
+        
         <MenuItem
           style={style.subMenu }
           title={<Text style={ style.textMenu }>Cerrar Sesión</Text>}

@@ -18,6 +18,13 @@ import { isString, find, isEmpty } from 'lodash'
 import Pdf from 'react-native-pdf';
 import Spinner from 'react-native-loading-spinner-overlay'
 import { CheckVersionAppScreens } from '../../components/CheckVersionAppScreens'
+import { Popup, Root } from 'popup-ui'
+import { useAuthStore } from '../../store/auth/useAuthStore'
+
+
+
+  const  extension =  ['jpg','jpeg' ,'png', 'pdf'];
+
 
 
 export const VerEstudioScreens = () => {
@@ -29,6 +36,8 @@ export const VerEstudioScreens = () => {
     const [downloadFileProgress, setDownloadFileProgress] = useState(false)
     const [pdfUrlSelected,setPdfUrlSelected] = useState("")
     const [ pdf, setPdf ] = useState(null);
+    const { extenciones } = useAuthStore()
+    
     const [optionsModalEstudioPreview, setOptionsModalEstudioPreview] = useState({
         show: false,
         index: 0
@@ -39,17 +48,20 @@ export const VerEstudioScreens = () => {
             const { detalleOrdenId, ordenId }: any = route.params
             const resp = await doctoresApi.get(`/paciente/ordenes/${ordenId}/detalle/${detalleOrdenId}/archivos`)
             const archivos = resp.data.data
-
+            console.log(archivos)
             setArchivosEstudio(archivos)
             setisLoading(true)
         } catch (error) {
-            ToastAndroid.showWithGravityAndOffset(
-                'No se pudo obtener el estudio',
-                ToastAndroid.LONG,
-                ToastAndroid.BOTTOM,
-                25,
-                50,
-              );
+           Popup.show({
+            type: 'Warning',
+            title: 'Error',
+            textBody: 'Este estudio no tiene ningun archivo cargado',
+            buttontext: 'Regresar',
+            callback: () => {
+                Popup.hide()
+                navigation.navigate('DetalleEstudioScreens' as never)
+              }
+           })
         }
 
     }
@@ -137,6 +149,7 @@ export const VerEstudioScreens = () => {
     const getFooterImagePreview = function(){
         let image = archivosEstudio[optionsModalEstudioPreview.index]
         return(
+            //TODO: Validacion de funcion para compartir la imagen.
             <ListItem onPress={()=>shareImageEstudio(image)} bottomDivider>
                 <ListItem.Content style={{ backgroundColor: '#f23'}}>
                     <ListItem.Title>Compartir</ListItem.Title>
@@ -149,12 +162,14 @@ export const VerEstudioScreens = () => {
 
     useEffect(() => {
         getAllArchivoEstudio();
+        console.log(extenciones)
     }, [])
     
 
 
     return (
-        <SafeAreaView style={{
+        <Root>
+            <SafeAreaView style={{
             flex: 1,
             backgroundColor: '#fff'
         }}>
@@ -187,7 +202,31 @@ export const VerEstudioScreens = () => {
                 }}>
                     {
                         archivosEstudio.map(({ url, extension }, item) => {
-                            if(extension === "pdf"){
+                            if(extension === "txt" || extension === "docx"){
+                                return(
+                                    
+                                        <Layout style={{
+                                            flex: 1,
+                                            marginHorizontal: 25,
+                                            justifyContent: 'center',
+                                            alignContent: 'center',
+                                            alignItems: 'center'
+                                        }}>
+                                            <Image 
+                                            style={{
+                                                width: 380,
+                                                height: 350,
+                                            }}
+                                            source={require('../../assets/images/errorImagen.png')}
+                                            />
+                                            <Text style={{
+                                                fontSize: 21,
+                                                textAlign: 'center'
+                                            }}>No se puede mostrar un archivo que no sea imagen o pdf</Text>
+                                        </Layout>
+                                 
+                                )
+                            }else if(extension === "pdf"){
                                 return (
                                     <Layout style={styles.containerPDF}>
                                         <TouchableOpacity onPress={() => setPdfUrlSelected(url)} style={ styles.muestraPDF}>
@@ -231,6 +270,9 @@ export const VerEstudioScreens = () => {
                 {/*Fin del Panel de la lista de archivo de los estudios */}
             </ScrollView>
         </SafeAreaView>
+
+        </Root>
+        
     )
 }
 

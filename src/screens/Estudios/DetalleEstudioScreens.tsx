@@ -30,6 +30,7 @@ export const DetalleEstudioScreens = () => {
     }
   }
 
+
   useEffect(() => {
    getAllEstudiosPaciente()
   }, [])
@@ -93,14 +94,16 @@ function ItemList(props: any) {
   const route = useRoute()
   let routeSelected = estudio.tipo_estudio.includes('Modelo') ? 'ListadoArchivoScreens' : 'VerEstudioScreens'
   return (
-      <ListItem key={estudio.id}  bottomDivider onPress={()=>navigator.navigate(routeSelected,{detalleOrdenId:estudio.id,ordenId:route.params.ordenId})}>
-          <ListItem.Content>
-              <ListItem.Title>{estudio.estudio}</ListItem.Title>
-              <ListItem.Subtitle>{estudio.tipo_estudio}</ListItem.Subtitle>
-          </ListItem.Content>
-          <Badge value={estudio.archivos} status="primary" />
-          <MyIcon name="eye-outline"/>
-      </ListItem>
+      <>
+        <ListItem key={estudio.id}  bottomDivider onPress={()=>navigator.navigate(routeSelected,{detalleOrdenId:estudio.id,ordenId:route.params.ordenId})}>
+            <ListItem.Content>
+                <ListItem.Title>{estudio.estudio}</ListItem.Title>
+                <ListItem.Subtitle>{estudio.tipo_estudio}</ListItem.Subtitle>
+            </ListItem.Content>
+            <Badge value={estudio.archivos} status="primary" />
+            <MyIcon name="eye-outline"/>
+        </ListItem>
+      </>
   )
 }
 

@@ -4,6 +4,7 @@ import { LoginResponse, Usuario } from "../../interfaces/AppInterfaces";
 import { authCheckToken, authLogin } from "../../context/auth/auth";
 import { StorageAdapter } from "../../api/adapter/asyncStorage";
 import { doctoresApi } from "../../api/doctoresApi";
+import { ImagenApp } from "../../interfaces/AppImagenInterfaces";
 
 export interface AuthState {
     status: AuthStatus;
@@ -13,6 +14,7 @@ export interface AuthState {
     logout: ()=>void;
     checkStatus: ()=>Promise<void>;
     userData: ()=>Promise<void>;
+    extenciones: string;   
     
 }
 
@@ -78,8 +80,12 @@ export const useAuthStore = create<AuthState>()( (set, get) =>({
     logout: ()=>{
         StorageAdapter.removeItem('token');
         set({ status:'notAuthenticated', token: undefined, usuario: undefined });
-    }
+    },
 
+    extenciones: () =>{
+        const extenciones =   ['jpg' | 'jpeg' | 'png' | 'pdf'];
+        return extenciones;
+    }
 
 }))
 

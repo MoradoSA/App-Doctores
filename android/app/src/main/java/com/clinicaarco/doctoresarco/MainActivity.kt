@@ -1,4 +1,4 @@
-package com.doctoresarcoshop;
+package com.clinicaarco.doctoresarco;
 import android.os.Bundle;
 import com.rnfs.RNFSPackage;
 

@@ -9,6 +9,7 @@ import { RecetarioFormaEntregaScreens } from '../screens/Recetario/RecetarioForm
 import { RecetarioSegurosListadoScreens } from '../screens/Recetario/RecetarioSegurosListadoScreens';
 import { RecetarioObservacionesScreens } from '../screens/Recetario/RecetarioObservacionesScreens';
 import { RecetarioGeneradorScreens } from '../screens/Recetario/RecetarioGeneradorScreens';
+import { CuentaScreens } from '../screens/Configuracion/CuentaScreens';
 
 
 
@@ -21,6 +22,7 @@ export type RootStackParams = {
     RecetarioSegurosListadoScreens: undefined;
     RecetarioObservacionesScreens: undefined;
     RecetarioGeneradorScreens: undefined;
+    CuentaScreens: undefined;
     NetworkCheckScreens: undefined;
     CheckVersionAppScreens: undefined;
 
@@ -53,6 +55,7 @@ export const RecetarioStackNavigation = () => {
       <Stack.Screen options={{ cardStyleInterpolator: fadeAnimation }} name="RecetarioSegurosListadoScreens" component={RecetarioSegurosListadoScreens} />
       <Stack.Screen options={{ cardStyleInterpolator: fadeAnimation }} name="RecetarioObservacionesScreens" component={RecetarioObservacionesScreens} />
       <Stack.Screen options={{ cardStyleInterpolator: fadeAnimation }} name="RecetarioGeneradorScreens" component={RecetarioGeneradorScreens} />
+      <Stack.Screen options={{ cardStyleInterpolator: fadeAnimation }} name="CuentaScreens" component={CuentaScreens} />
       <Stack.Screen options={{ cardStyleInterpolator: fadeAnimation }} name="NetworkCheckScreens" component={NetworkCheckScreens} />
       <Stack.Screen options={{ cardStyleInterpolator: fadeAnimation }} name="CheckVersionAppScreens" component={CheckVersionAppScreens} />
 

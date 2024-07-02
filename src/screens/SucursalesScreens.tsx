@@ -14,142 +14,157 @@ export const SucursalesScreens = () => {
   const navigation = useNavigation();
   const [selectedIndex, setSelectedIndex] = React.useState(null);
   const [message, setMessage] = useState('');
-  const horaActual = new Date().getHours()
+  const horaActual = new Date().toTimeString()
+  const horaInicio = 8
+  const horaCierre = 18
   const diaActual = new Date().getDay()
   const mensaje = 'Hola, Como esta? Tengo una consulta'
-  const nemby   = '0985677912' 
-  const mariano = '0982100609' 
-  const azara   = '0984557644'
+  const nemby = '0985677912'
+  const mariano = '0982100609'
+  const azara = '0984557644'
   const itaugua = '0981636301'
-  const luque   = '0984557179'
-  const km5     = '0985464550'
-  const Sloren  = '0984560367'
+  const luque = '0984557179'
+  const km5 = '0985464550'
+  const Sloren = '0984560367'
   const lambare = '0986227216'
   const capiata = '0984589232'
-  const carape  = '0984389512'
+  const carape = '0984389512'
 
-  const sendMensajeNemby = async() =>{
+  
+  
+  useEffect(() => {
+    if( diaActual === 0 && horaActual === '7:00:00' && horaActual >= '18:00:00' ){
+        console.log('La sucursal esta abierta')
+        console.log(diaActual)
+    }else{
+      console.log('La sucursal esta cerrada')
+      //console.log(diaActual)
+    }
+  }, [])
+
+
+  const sendMensajeNemby = async () => {
     const text = encodeURIComponent(mensaje)
     const url = `https://api.whatsapp.com/send?phone=595${nemby}&text=${text}`
-    
+
     try {
       await Linking.openURL(url)
     } catch (error) {
-        console.log(error)
+      console.log(error)
     }
-   
+
   }
 
-  const sendMensajeMariano = async() =>{
+  const sendMensajeMariano = async () => {
     const text = encodeURIComponent(mensaje)
     const url = `https://api.whatsapp.com/send?phone=595${mariano}&text=${text}`
-    
+
     try {
       await Linking.openURL(url)
     } catch (error) {
-        console.log(error)
+      console.log(error)
     }
-   
+
   }
 
-  const sendMensajeAzara = async() =>{
+  const sendMensajeAzara = async () => {
     const text = encodeURIComponent(mensaje)
     const url = `https://api.whatsapp.com/send?phone=595${azara}&text=${text}`
-    
+
     try {
       await Linking.openURL(url)
     } catch (error) {
-        console.log(error)
+      console.log(error)
     }
-   
+
   }
 
-  const sendMensajeItaugua = async() =>{
+  const sendMensajeItaugua = async () => {
     const text = encodeURIComponent(mensaje)
     const url = `https://api.whatsapp.com/send?phone=595${itaugua}&text=${text}`
-    
+
     try {
       await Linking.openURL(url)
     } catch (error) {
-        console.log(error)
+      console.log(error)
     }
-   
+
   }
 
-  const sendMensajeLuque = async() =>{
+  const sendMensajeLuque = async () => {
     const text = encodeURIComponent(mensaje)
     const url = `https://api.whatsapp.com/send?phone=595${luque}&text=${text}`
-    
+
     try {
       await Linking.openURL(url)
     } catch (error) {
-        console.log(error)
+      console.log(error)
     }
-   
+
   }
 
-  const sendMensajeKM5 = async() =>{
+  const sendMensajeKM5 = async () => {
     const text = encodeURIComponent(mensaje)
     const url = `https://api.whatsapp.com/send?phone=595${km5}&text=${text}`
-    
+
     try {
       await Linking.openURL(url)
     } catch (error) {
-        console.log(error)
+      console.log(error)
     }
-   
+
   }
 
 
-  const sendMensajeSanLorenzo= async() =>{
+  const sendMensajeSanLorenzo = async () => {
     const text = encodeURIComponent(mensaje)
     const url = `https://api.whatsapp.com/send?phone=595${Sloren}&text=${text}`
-    
+
     try {
       await Linking.openURL(url)
     } catch (error) {
-        console.log(error)
+      console.log(error)
     }
-   
+
   }
 
-  const sendMensajeLambare  = async() =>{
+  const sendMensajeLambare = async () => {
     const text = encodeURIComponent(mensaje)
     const url = `https://api.whatsapp.com/send?phone=595${lambare}&text=${text}`
-    
+
     try {
       await Linking.openURL(url)
     } catch (error) {
-        console.log(error)
+      console.log(error)
     }
-   
+
   }
 
 
-  const sendMensajeCapiata  = async() =>{
+  const sendMensajeCapiata = async () => {
     const text = encodeURIComponent(mensaje)
     const url = `https://api.whatsapp.com/send?phone=595${capiata}&text=${text}`
-    
+
     try {
       await Linking.openURL(url)
     } catch (error) {
-        console.log(error)
+      console.log(error)
     }
-   
+
   }
 
 
 
-  const sendMensajeCarapegua  = async() =>{
+  const sendMensajeCarapegua = async () => {
     const text = encodeURIComponent(mensaje)
     const url = `https://api.whatsapp.com/send?phone=595${carape}&text=${text}`
-    
+
     try {
       await Linking.openURL(url)
     } catch (error) {
-        console.log(error)
+      console.log(error)
     }
-   
+
   }
 
   const sucursalIcon = (props: any): IconElement => (
@@ -184,19 +199,15 @@ export const SucursalesScreens = () => {
     />
   )
 
-  useEffect(() => {
-    const mensaje = 'Hola, Como esta? Tengo una consulta'
-    setMessage(mensaje)
-  }, [])
-  
 
 
+ 
   return (
     <LinearGradient
-    colors={['#7FDFF0', '#fff', '#fff', '#91E4F2']}
-    start={{ x: 0, y: 1 }}
-    end={{ x: 1, y: 0 }}
-    style={{ flex: 1 }}
+      colors={['#7FDFF0', '#fff', '#fff', '#91E4F2']}
+      start={{ x: 0, y: 1 }}
+      end={{ x: 1, y: 0 }}
+      style={{ flex: 1 }}
     >
       <Layout style={{
         flex: 1,
@@ -205,7 +216,7 @@ export const SucursalesScreens = () => {
 
         <Layout style={style.headerContainer}>
           <Layout style={style.headerIcon}>
-            <MyIcon name='person-outline' />
+            <MyIcon name='home-outline' />
           </Layout>
           <Layout style={{ ...style.headerTextContainer, margin: 15 }}>
             <Text style={style.headerText}>Sucursales Arco</Text>
@@ -220,8 +231,8 @@ export const SucursalesScreens = () => {
             <MenuGroup
               style={{
                 height: 80,
-              }}
-              title={diaActual == 7 && horaActual < 8 || horaActual > 19 ? <Text>Arco Ñemby: <Text style={style.infoCerrado}>Cerrado</Text></Text> : <Text>Arco Ñemby:<Text style={style.infoAbierto}> Abierto</Text></Text>}
+              }} 
+              title={ diaActual === 0 && horaActual === '8:00:00' && horaActual >= '18:00:00' ? <Text>Arco Ñemby: <Text style={style.infoCerrado}>Cerrado</Text></Text> : <Text>Arco Ñemby:<Text style={style.infoAbierto}> Abierto</Text></Text>}
               accessoryLeft={sucursalIcon}
             >
               <MenuItem
@@ -238,14 +249,14 @@ export const SucursalesScreens = () => {
                 accessoryRight={directionIcon}
                 onPress={() => Linking.openURL(`https://www.google.com/maps?q=-25.3971358,-57.5434319`)}
               />
-             
+
             </MenuGroup>
 
             <MenuGroup
               style={{
                 height: 80,
               }}
-              title={diaActual == 7 && horaActual < 8 || horaActual > 19 ? <Text>Arco Mariano: <Text style={style.infoCerrado}>Cerrado</Text></Text> : <Text>Arco Mariano:<Text style={style.infoAbierto}> Abierto</Text></Text>}
+              title={ diaActual === 0 && horaActual === '8:00:00' && horaActual >= '18:00:00' ? <Text>Arco Mariano: <Text style={style.infoCerrado}>Cerrado</Text></Text> : <Text>Arco Mariano:<Text style={style.infoAbierto}> Abierto</Text></Text>}
               accessoryLeft={sucursalIcon}
             >
               <MenuItem
@@ -260,15 +271,15 @@ export const SucursalesScreens = () => {
                 title={<Text>Ubicacion de la clinica</Text>}
                 accessoryLeft={locationIcon}
                 accessoryRight={directionIcon}
-                onPress={() => Linking.openURL(`https://www.google.com/maps?q=-25.3971358,-57.5434319`)}
+                onPress={() => Linking.openURL(`https://www.google.com/maps?q=-25.2119731,-57.5298478`)}
               />
             </MenuGroup>
-            
+
             <MenuGroup
               style={{
                 height: 80,
               }}
-              title={diaActual == 7 && horaActual < 8 || horaActual > 19 ? <Text>Arco Azara: <Text style={style.infoCerrado}>Cerrado</Text></Text> : <Text>Arco Azara:<Text style={style.infoAbierto}> Abierto</Text></Text>}
+              title={ diaActual === 0 && horaActual === '8:00:00' && horaActual >= '18:00:00' ? <Text>Arco Azara: <Text style={style.infoCerrado}>Cerrado</Text></Text> : <Text>Arco Azara:<Text style={style.infoAbierto}> Abierto</Text></Text>}
               accessoryLeft={sucursalIcon}
             >
               <MenuItem
@@ -291,7 +302,7 @@ export const SucursalesScreens = () => {
               style={{
                 height: 80,
               }}
-              title={diaActual == 7 && horaActual < 8 || horaActual > 19 ? <Text>Arco Itaugua: <Text style={style.infoCerrado}>Cerrado</Text></Text> : <Text>Arco Itaugua:<Text style={style.infoAbierto}> Abierto</Text></Text>}
+              title={ diaActual === 0 && horaActual === '8:00:00' && horaActual >= '18:00:00' ? <Text>Arco Itaugua: <Text style={style.infoCerrado}>Cerrado</Text></Text> : <Text>Arco Itaugua:<Text style={style.infoAbierto}> Abierto</Text></Text>}
               accessoryLeft={sucursalIcon}
             >
               <MenuItem
@@ -314,7 +325,7 @@ export const SucursalesScreens = () => {
               style={{
                 height: 80,
               }}
-              title={diaActual == 7 && horaActual < 8 || horaActual > 19 ? <Text>Arco Luque: <Text style={style.infoCerrado}>Cerrado</Text></Text> : <Text>Arco Luque:<Text style={style.infoAbierto}> Abierto</Text></Text>}
+              title={ diaActual === 0 && horaActual === '8:00:00' && horaActual >= '18:00:00' ? <Text>Arco Luque: <Text style={style.infoCerrado}>Cerrado</Text></Text> : <Text>Arco Luque:<Text style={style.infoAbierto}> Abierto</Text></Text>}
               accessoryLeft={sucursalIcon}
             >
               <MenuItem
@@ -337,7 +348,7 @@ export const SucursalesScreens = () => {
               style={{
                 height: 80,
               }}
-              title={diaActual == 7 && horaActual < 8 || horaActual > 19 ? <Text>Arco Km5: <Text style={style.infoCerrado}>Cerrado</Text></Text> : <Text>Arco Km5:<Text style={style.infoAbierto}> Abierto</Text></Text>}
+              title={ diaActual === 0 && horaActual === '8:00:00' && horaActual >= '18:00:00' ? <Text>Arco Km5: <Text style={style.infoCerrado}>Cerrado</Text></Text> : <Text>Arco Km5:<Text style={style.infoAbierto}> Abierto</Text></Text>}
               accessoryLeft={sucursalIcon}
             >
               <MenuItem
@@ -360,7 +371,7 @@ export const SucursalesScreens = () => {
               style={{
                 height: 80,
               }}
-              title={diaActual == 7 && horaActual < 8 || horaActual > 19 ? <Text>Arco San Lorenzo: <Text style={style.infoCerrado}>Cerrado</Text></Text> : <Text>Arco San Lorenzo:<Text style={style.infoAbierto}> Abierto</Text></Text>}
+              title={ diaActual === 0 && horaActual === '7:00:00' && horaActual >= '18:00:00' ? <Text>Arco San Lorenzo: <Text style={style.infoCerrado}>Cerrado</Text></Text> : <Text>Arco San Lorenzo:<Text style={style.infoAbierto}> Abierto</Text></Text>}
               accessoryLeft={sucursalIcon}
             >
               <MenuItem
@@ -375,7 +386,7 @@ export const SucursalesScreens = () => {
                 title={<Text>Ubicacion de la clinica</Text>}
                 accessoryLeft={locationIcon}
                 accessoryRight={directionIcon}
-                onPress={() => Linking.openURL(`https://www.google.com/maps?q=-25.3341489,-57.6210606`)}
+                onPress={() => Linking.openURL(`https://www.google.com/maps?q=-25.3459817,-57.5060017`)}
               />
             </MenuGroup>
 
@@ -383,7 +394,7 @@ export const SucursalesScreens = () => {
               style={{
                 height: 80,
               }}
-              title={diaActual == 7 && horaActual < 8 || horaActual > 19 ? <Text>Arco Lambare: <Text style={style.infoCerrado}>Cerrado</Text></Text> : <Text>Arco Lambare:<Text style={style.infoAbierto}> Abierto</Text></Text>}
+              title={ diaActual === 0 && horaActual === '8:00:00' && horaActual >= '18:00:00' ? <Text>Arco Lambare: <Text style={style.infoCerrado}>Cerrado</Text></Text> : <Text>Arco Lambare:<Text style={style.infoAbierto}> Abierto</Text></Text>}
               accessoryLeft={sucursalIcon}
             >
               <MenuItem
@@ -405,7 +416,7 @@ export const SucursalesScreens = () => {
               style={{
                 height: 80,
               }}
-              title={diaActual == 7 && horaActual < 8 || horaActual > 19 ? <Text>Arco Capiata: <Text style={style.infoCerrado}>Cerrado</Text></Text> : <Text>Arco Capiata:<Text style={style.infoAbierto}> Abierto</Text></Text>}
+              title={diaActual === 0 && horaActual === '8:00:00' && horaActual >= '18:00:00' ? <Text>Arco Capiata: <Text style={style.infoCerrado}>Cerrado</Text></Text> : <Text>Arco Capiata:<Text style={style.infoAbierto}> Abierto</Text></Text>}
               accessoryLeft={sucursalIcon}
             >
               <MenuItem
@@ -428,7 +439,7 @@ export const SucursalesScreens = () => {
               style={{
                 height: 80,
               }}
-              title={diaActual == 7 && horaActual < 8 || horaActual > 19 ? <Text>Arco Carapegua: <Text style={style.infoCerrado}>Cerrado</Text></Text> : <Text>Arco Carapegua:<Text style={style.infoAbierto}> Abierto</Text></Text>}
+              title={ diaActual === 0 && horaActual === '8:00:00' && horaActual >= '18:00:00' ? <Text>Arco Carapegua: <Text style={style.infoCerrado}>Cerrado</Text></Text> : <Text>Arco Carapegua:<Text style={style.infoAbierto}> Abierto</Text></Text>}
               accessoryLeft={sucursalIcon}
             >
               <MenuItem
@@ -448,13 +459,13 @@ export const SucursalesScreens = () => {
             </MenuGroup>
 
             <MenuGroup
-             
+
             >
               <MenuItem
 
               />
               <MenuItem
-               
+
               />
             </MenuGroup>
           </Menu>

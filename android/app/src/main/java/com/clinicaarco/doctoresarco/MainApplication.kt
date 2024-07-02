@@ -1,4 +1,4 @@
-package com.doctoresarcoshop
+package com.clinicaarco.doctoresarco
 
 import android.app.Application
 import com.facebook.react.PackageList
