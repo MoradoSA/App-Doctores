@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Image, useWindowDimensions } from 'react-native'
+import { Image, StyleSheet, useWindowDimensions } from 'react-native'
 import { Layout, Modal, Text } from '@ui-kitten/components'
 import NetInfo from "@react-native-community/netinfo";
 
@@ -30,14 +30,7 @@ export const NetworkCheckScreens = () => {
         height: height,
         backgroundColor: '#fff',
     }}>
-        <Layout style= {{
-            flex: 1,
-            margin: 5,
-            justifyContent: 'center',
-            alignContent: 'center',
-            alignItems: 'center',
-    
-        }}>
+        <Layout style= {style.container}>
             <Image
             style={{
                 width: 400,
@@ -48,7 +41,7 @@ export const NetworkCheckScreens = () => {
 
             source={require('../assets/images/NetworkError.png')}
             />
-            <Text style={{ fontSize: 18, fontWeight: 500, marginTop: -40}}>Por Favor, conecetese a internet......</Text>
+            <Text style={{ fontSize: 18, fontWeight: 'bold', marginTop: -40}}>Por Favor, conecetese a internet ......</Text>
         </Layout>
 
     </Layout>
@@ -56,4 +49,24 @@ export const NetworkCheckScreens = () => {
     
   ) 
 }
+
+const style = StyleSheet.create({
+    container: {
+        flex: 1,
+        borderColor: 'white',
+        borderWidth: 1,
+        borderRadius: 10,
+        justifyContent: 'center',
+        alignItems: 'center',
+        margin: 10,
+        shadowOffset: {
+            width: 0,
+            height: 9,
+          },
+          shadowOpacity: 0.50,
+          shadowRadius: 9,
+      
+          elevation: 5,
+    }
+})
 

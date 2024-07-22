@@ -69,6 +69,7 @@ export const LoginScreens = () => {
     })
   }
   /*----------------------------------------------- */
+
   const onLogin = async () => {
     if (form.cedula.length === 0 || form.password.length === 0) {
 
@@ -124,6 +125,7 @@ export const LoginScreens = () => {
                 underlineColorAndroid='white'
                 autoCorrect={false}
                 accessoryLeft={<MyIcon name="credit-card-outline" />}
+                cursorColor={'black'}
                 onSubmitEditing={onLogin}
               />
             </Layout>
@@ -137,6 +139,7 @@ export const LoginScreens = () => {
                 secureTextEntry
                 placeholder="Ingrese su nro de Registro"
                 accessoryLeft={<MyIcon name="lock-outline" />}
+                cursorColor={'black'}
                 onSubmitEditing={onLogin}
               />
             </Layout>

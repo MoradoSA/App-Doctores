@@ -1,14 +1,14 @@
 import axios from 'axios';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { API_URL, API_URL_ANDROID, API_URL_IOS, STAGE } from '@env';
 import { Platform } from 'react-native';
 import { StorageAdapter } from './adapter/asyncStorage';
 
-const baseURL = ( STAGE === 'prod') ?  API_URL 
-: Platform.OS === 'ios'
-? API_URL_IOS
-: API_URL_ANDROID;
+// const baseURL = ( STAGE === 'prod') ?  API_URL 
+// : Platform.OS === 'ios'
+// ? API_URL_IOS
+// : API_URL_ANDROID;
 
+const baseURL = 'http://192.168.100.11:8000/api'
 
 const doctoresApi = axios.create(
     {

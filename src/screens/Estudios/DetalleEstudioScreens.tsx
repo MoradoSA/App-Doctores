@@ -68,7 +68,7 @@ export const DetalleEstudioScreens = () => {
           </Layout>
 
           {/* Inicio del listado de los estudios realizados por el paciente */}
-            <Layout>
+            <Layout >
                 <Card>
                   <Layout>
                   <FlatList

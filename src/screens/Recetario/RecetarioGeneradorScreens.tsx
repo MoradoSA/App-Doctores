@@ -11,6 +11,7 @@ import RNHTMLtoPDF from 'react-native-html-to-pdf';
 import Share from 'react-native-share'
 import WebView from 'react-native-webview';
 import * as htmlToImage from 'html-to-image';
+import { doctoresApi } from '../../api/doctoresApi';
 
 export const RecetarioGeneradorScreens = () => {
   const { usuario } = useAuthStore()
@@ -42,6 +43,22 @@ export const RecetarioGeneradorScreens = () => {
     let ciudadCeguro = route.params?.seguro.ciudad
     let observacion = route.params?.observaciones
 
+    const [grabado, setGrabado] = useState();
+
+    const grabadoOreOrden = () =>{
+      doctoresApi.get('/auth/doctores/pacientes/pre-orden').then((resposnse) =>{
+        setGrabado(resposnse.data)
+        console.log('Hola')
+      }).catch((error) =>{
+        console.log(error)
+      })
+
+    }
+
+    useEffect(() => {
+        grabadoOreOrden()
+    }, [])
+    
 
     const image = `
       <html>

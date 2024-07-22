@@ -6,6 +6,7 @@ import { PerfilDoctorScreens } from '../screens/Configuracion/PerfilDoctorScreen
 import { CuentaScreens } from '../screens/Configuracion/CuentaScreens';
 import { FirmaDigitalScreens } from '../screens/Configuracion/FirmaDigitalScreens';
 import { RecetarioListadoEstudiosScreens } from '../screens/Recetario/RecetarioListadoEstudiosScreens';
+import { RecetarioModeloScreens } from '../screens/Configuracion/RecetarioModeloScreens';
 
 
 

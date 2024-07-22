@@ -95,7 +95,7 @@ export const  BottonTabsNavigation = () => {
       <Tab.Screen name="Settings" component={CuentaStackNavigation} options={{
         tabBarIcon: ({focused}) =>(
           <Layout>
-            <Icon name='settings-2-outline' style={{
+            <Icon name='clipboard-outline' style={{
               with: 28,
               height: 28,
               resizeMode: 'contain',
@@ -105,7 +105,7 @@ export const  BottonTabsNavigation = () => {
             <Text style={{
               fontSize: 12,
               color: focused ? '#1A4ADF' : 'black',
-            }}>Cuenta</Text>
+            }}>Clinica</Text>
           </Layout>
         )
       }} />

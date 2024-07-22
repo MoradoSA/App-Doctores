@@ -11,7 +11,6 @@ import { ListItem } from 'react-native-elements'
 import { MyIcon } from '../components/ui/MyIcon'
 import { NetworkCheckScreens } from '../components/NetworkCheckScreens'
 import { CheckVersionAppScreens } from '../components/CheckVersionAppScreens'
-import LinearGradient from 'react-native-linear-gradient'
 import { Popup, Root } from 'popup-ui'
 
 

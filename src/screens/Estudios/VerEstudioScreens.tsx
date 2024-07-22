@@ -20,6 +20,7 @@ import Spinner from 'react-native-loading-spinner-overlay'
 import { CheckVersionAppScreens } from '../../components/CheckVersionAppScreens'
 import { Popup, Root } from 'popup-ui'
 import { useAuthStore } from '../../store/auth/useAuthStore'
+import LinearGradient from 'react-native-linear-gradient'
 
 
 
@@ -48,7 +49,6 @@ export const VerEstudioScreens = () => {
             const { detalleOrdenId, ordenId }: any = route.params
             const resp = await doctoresApi.get(`/paciente/ordenes/${ordenId}/detalle/${detalleOrdenId}/archivos`)
             const archivos = resp.data.data
-            console.log(archivos)
             setArchivosEstudio(archivos)
             setisLoading(true)
         } catch (error) {
@@ -162,24 +162,31 @@ export const VerEstudioScreens = () => {
 
     useEffect(() => {
         getAllArchivoEstudio();
-        console.log(extenciones)
     }, [])
     
 
 
     return (
         <Root>
+            <LinearGradient 
+                 colors={['#7FDFF0', '#fff', '#fff', '#91E4F2']}
+                 start={{ x: 0, y: 1 }}
+                 end={{ x: 1, y: 0 }}
+                 style={{ flex: 1 }}
+            
+            >
             <SafeAreaView style={{
             flex: 1,
-            backgroundColor: '#fff'
+            backgroundColor: 'transparent'
         }}>
             <ScrollView>
                 {/*Inicio del Panel de la lista de archivo de los estudios */}
                 <NetworkCheckScreens />
                 <CheckVersionAppScreens/>
-                <Layout style={homeStyle.headerContainer}>
+                <Layout style={ styles.headerContainer }>
                     <Layout style={{
-                        margin: 10
+                        margin: 10,
+                         backgroundColor: 'transparent'
                     }}>
                         <TouchableOpacity
                             onPress={() => navigation.goBack()}
@@ -188,12 +195,13 @@ export const VerEstudioScreens = () => {
                             />
                         </TouchableOpacity>
                     </Layout>
-                    <Layout style={{ ...homeStyle.headerTextContainer, margin: 10 }}>
-                        <Text style={homeStyle.headerText}>Imagen del Estudio</Text>
+                    <Layout style={styles.headerTextContainer}>
+                        <Text style={styles.headerText}>Imagen del Estudio</Text>
                     </Layout>
                 </Layout>
                 <Layout style={{
                     flex: 1,
+                    backgroundColor: 'transparent',
                     justifyContent: 'center',
                     alignContent: 'center',
                     marginHorizontal: 20
@@ -269,14 +277,38 @@ export const VerEstudioScreens = () => {
 
                 {/*Fin del Panel de la lista de archivo de los estudios */}
             </ScrollView>
-        </SafeAreaView>
-
+        </SafeAreaView>     
+        </LinearGradient>
         </Root>
         
     )
 }
 
 const styles = StyleSheet.create({
+    headerContainer: {
+        flexDirection: 'row',
+        backgroundColor: 'transparent',
+        marginHorizontal:30,
+        borderBottomWidth: 1,
+        borderBottomColor: 'black',
+        marginBottom: 15
+    },
+
+    headerTextContainer: {
+        backgroundColor: 'transparent',
+        justifyContent: 'center',
+        marginHorizontal: 50,
+        
+       
+    },
+
+    headerText: {
+        justifyContent: 'center',
+        fontSize: 20,
+        fontWeight: 900,
+       
+    },
+
     imageContainer: {
         flex: 1,
         width: 360,

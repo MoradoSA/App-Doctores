@@ -15,6 +15,8 @@ import LinearGradient from 'react-native-linear-gradient'
 import { isEmpty } from 'lodash'
 
 
+
+
 export const RecetarioListadoScreens = () => {
   const navigation = useNavigation()
   const [isLoading, setIsLoading] = useState(false)
@@ -29,48 +31,7 @@ export const RecetarioListadoScreens = () => {
     navigation.navigate('RecetarioPacienteScreens' as never)
   }
 
-  const getDataOrden = async () => {
-    try {
-      let data = JSON.parse(await AsyncStorage.getItem("@ordenData"))
-      dataOrden = data
-      logoClinica = await RNFS.readFile(data.logo, "base64")
-      firmaDoctor = await RNFS.readFile(data.firma, "base64")
-      if (isEmpty(firmaDoctor)) {
-        Popup.show({
-          type: 'Warning',
-          title: 'Error',
-          textBody: 'No tiene la firma del doctor',
-          buttontext: 'Regresar',
-          callback: () => {
-            Popup.hide()
-            navigation.navigate('FirmaDigitalScreens' as never)
-          }
-        })
-      } else if (isEmpty(logoClinica)) {
-        Popup.show({
-          type: 'Warning',
-          title: 'Error',
-          textBody: 'No tiene los datos de la Clinica',
-          buttontext: 'Regresar',
-          callback: () => {
-            Popup.hide()
-            navigation.navigate('DatosOrdenDoctorScreens' as never)
-          }
-        })
-      }
-    } catch (error) {
-      Popup.show({
-        type: 'Warning',
-        title: 'Error!',
-        textBody: 'No tiene, ni la firma, ni los datos de la clinica',
-        buttonText: 'Ok',
-        callback() {
-          Popup.hide()
-        }
-      })
-    }
-  }
-
+ 
   const  getDataApp  = async() =>{
     try {
         let data = JSON.parse(await AsyncStorage.getItem("@ordenData"))
@@ -114,7 +75,6 @@ export const RecetarioListadoScreens = () => {
   }
 
   useEffect(() => {
-    //getDataOrden()
     getDataApp()
 
   }, [])

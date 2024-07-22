@@ -83,10 +83,9 @@ export const DatosOrdenDoctorScreens = () => {
                 type: 'Danger',
                 title: 'Error!',
                 textBody: 'No se ha podido guardar los datos',
-                //buttonText:'Completar Ahora!',
                 callback: () => {
                     Popup.hide()
-                    //navigation.navigate('DatosOrdenDoctorScreens' as never)
+                   
                 }
             })
         })
@@ -142,10 +141,10 @@ export const DatosOrdenDoctorScreens = () => {
                     type: 'Danger',
                     title: 'Error!',
                     textBody: 'No se pudo cargar la imagen',
-                    //buttonText:'Completar Ahora!',
+    
                     callback: () => {
                         Popup.hide()
-                        //navigation.navigate('DatosOrdenDoctorScreens' as never)
+                       
                     }
                 })
             })
@@ -159,10 +158,9 @@ export const DatosOrdenDoctorScreens = () => {
             type: 'Danger',
             title: 'Error!',
             textBody: 'No se ha realizado ningun cambio',
-            //buttonText:'Completar Ahora!',
             callback: () => {
                 Popup.hide()
-                //navigation.navigate('DatosOrdenDoctorScreens' as never)
+               
             }
         })
         setDataClinicaSingle(dataClinica)
@@ -182,10 +180,10 @@ export const DatosOrdenDoctorScreens = () => {
                 type: 'Danger',
                 title: 'Error!',
                 textBody: 'La orden no tiene logo',
-                //buttonText:'Completar Ahora!',
+
                 callback: () => {
                     Popup.hide()
-                    //navigation.navigate('DatosOrdenDoctorScreens' as never)
+                   
                 }
             })
         }
@@ -307,7 +305,7 @@ export const DatosOrdenDoctorScreens = () => {
                                         underlineColorAndroid='white'
                                         autoCorrect={false}
                                         accessoryLeft={<MyIcon name="home-outline" />}
-                                    //onSubmitEditing={onLogin}
+                                        cursorColor={'black'}
                                     />
                                 </Layout>
 
@@ -321,7 +319,7 @@ export const DatosOrdenDoctorScreens = () => {
                                         value={dataClinicaSingle.direccion}
                                         placeholder="Ingrese la direccion de la clinica"
                                         accessoryLeft={<MyIcon name="navigation-2-outline" />}
-                                    //onSubmitEditing={onLogin}
+                                        cursorColor={'black'}
                                     />
                                 </Layout>
 
@@ -335,6 +333,7 @@ export const DatosOrdenDoctorScreens = () => {
                                         value={dataClinicaSingle.telefono}
                                         placeholder="Ingrese el numero de telefono"
                                         accessoryLeft={<MyIcon name="phone-call-outline" />}
+                                        cursorColor={'black'}
 
                                     />
                                 </Layout>
